@@ -1,0 +1,1 @@
+#güvenli python sandbox (ast+subprocess) ile kod çalıştırma, çıktı yakalama, hata yönetimi

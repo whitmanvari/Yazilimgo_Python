@@ -1,0 +1,1 @@
+#Sabitler: DB yolu, renkler, sandbox whitelist

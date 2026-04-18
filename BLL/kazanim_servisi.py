@@ -1,0 +1,1 @@
+#rozet tetikleme motoru

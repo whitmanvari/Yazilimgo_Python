@@ -1,0 +1,1 @@
+#kazanım + kazanım tanıtımı dataclassı

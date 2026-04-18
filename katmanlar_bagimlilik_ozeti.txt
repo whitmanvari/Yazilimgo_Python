@@ -1,0 +1,6 @@
+Katman	        --> Import edebileceği      -->	Import edemeyeceği
+
+presentation/	--> bll/, entities/	        --> dal/, db/
+bll/	        --> dal/, entities/	        --> presentation/
+dal/	        --> entities/	            -->bll/, presentation/
+entities/	    -->Hiçbiri (saf dataclass)	-->Tüm katmanlar

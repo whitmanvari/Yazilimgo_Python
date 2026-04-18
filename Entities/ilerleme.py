@@ -1,0 +1,1 @@
+#ilerleme durumu dataclassı

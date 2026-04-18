@@ -1,0 +1,1 @@
+#xp hesaplama, seviye atlama formülleri

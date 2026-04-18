@@ -1,0 +1,1 @@
+#ders yükleme cevap doğrulama işlemleri

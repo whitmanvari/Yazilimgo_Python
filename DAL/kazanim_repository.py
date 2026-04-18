@@ -1,0 +1,1 @@
+#kazanım crud işlemleri

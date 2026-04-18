@@ -1,0 +1,1 @@
+#dersmodulu dataclass'ı
