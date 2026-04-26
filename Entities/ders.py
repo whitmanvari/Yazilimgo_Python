@@ -3,7 +3,7 @@
 from sqlalchemy import CheckConstraint, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from Yazilimgo_Python.entities.modul import DersModulu
+from entities.modul import DersModulu
 from entities.base import Base
 
 #c# karşılığı enum 

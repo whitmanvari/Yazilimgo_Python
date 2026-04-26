@@ -2,13 +2,14 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 from config import DB_YOLU
 
-from Yazilimgo_Python.entities.base import Base 
+from entities.base import Base 
 # C#'taki DbSet<> tanımlamalarının karşılığı budur, kullanmasak bile import etmeliyiz ki SQLAlchemy tabloların varlığından haberdar olsun.
-from Yazilimgo_Python.entities.kullanici import Kullanici
-from Yazilimgo_Python.entities.modul import DersModulu
-from Yazilimgo_Python.entities.ders import Ders
-from Yazilimgo_Python.entities.ilerleme import IlerlemeKaydi
-from Yazilimgo_Python.entities.kazanim import KazanimTanimi, KullaniciKazanim
+from entities.kullanici import Kullanici
+from entities.modul import DersModulu
+from entities.ders import Ders
+from entities.ilerleme import IlerlemeKaydi
+from entities.kazanim import KazanimTanimi
+from entities.kullaniciKazanim import KullaniciKazanim
 # Not: Kullandığım editör visual studio code bunları kullanılmayan değişken olarak görse de, yine de SQLAlchemy okuyacaktır. 
 
 
