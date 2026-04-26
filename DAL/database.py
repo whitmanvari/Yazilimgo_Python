@@ -79,3 +79,26 @@ class DatabaseManager:
         return self._SessionLocal()
 
 
+
+
+"""Bilgilendirme (Docstring):
+UNIT OF WORK (İŞ BİRİMİ) TASARIM DESENİ:
+Unit of Work, uygulamanın veritabanına yapacağı birden fazla ekleme, silme veya güncelleme işlemini tek bir liste 
+halinde RAM'de tutan ve bu listenin tamamını tek seferde (tek bir transaction içinde) veritabanına gönderen bir tasarım desenidir.
+NEDEN KULLANIRIZ?
+Veri Bütünlüğü (Rollback): Diyelim ki aynı anda 1 Kullanıcı eklediK, 
+1 İlerleme eklediK ve 1 Kazanım eklediK. Bunlar veritabanına giderken 3. işlemde hata çıkarsa, UoW ilk 2 işlemi de geri alır (Rollback).
+Veritabanında yarım kalmış bozuk veri oluşmasını engeller. Ya hepsi kaydolur ya hiçbiri.
+Performans (Ağ Trafiği): Veritabanına her kayıt eklendiğinde 
+ağı meşgul edip yeni bir bağlantı açmak yerine, tüm işlemleri bellekte biriktirir 
+ve tek bir SQL bloğu halinde veritabanına yollar. Ağ trafiğini minimize eder.
+
+Örneğin c#'ta Entity Framework Core --> DbContext sınıfının kendisi doğrudan Unit of Work desenini uygular. 
+Python'da ise SQLAlchemy'nin Session sınıfı Unit of Work desenini uygular.
+Yani c#'ta savechanges() methoduna kadar veritabanına hiçbir değişiklik gitmez, python'da ise commit() methoduna kadar hiçbir değişiklik gitmez.
+
+UoW Kayıtları RAM'e Alma İşlemi: C#'ta .Add() / Python'da .add()
+
+UoW Transaction'ı Çalıştırma İşlemi: C#'ta .SaveChanges() / Python'da .commit()
+
+"""
