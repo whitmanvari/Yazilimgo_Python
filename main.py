@@ -1,5 +1,6 @@
 from dal.database import DatabaseManager
 from dal.kullanici_repository import KullaniciRepository
+from bll.kullanici_servisi import KullaniciServisi
 from seed import seed_verileri_yukle
 from entities.modul import DersModulu
 
@@ -10,19 +11,11 @@ def main():
     seed_verileri_yukle()  
 
     session = db.get_session()
-    kullanici_repo = KullaniciRepository(session)
+    repo = KullaniciRepository(session)
+    servis = KullaniciServisi(repo)
 
-    print("Yazılımgo başlatıldı!")
+    print("İş katmanı testi başlıyor..")
 
-    moduller= session.query(DersModulu).all()
-    print("Yüklü modüller: "+ str(len(moduller)) + "adet.")
-    for modul in moduller:
-        print(modul.modul_adi + "-" + "XP Çarpanı:" + str(modul.xp_carpani))
-
-    kullanicilar = kullanici_repo.tum_kullanicilari_getir()
-    print("Kayıtlı kullanıcılar " + str(len(kullanicilar)) + " adet.")
-    for kullanici in kullanicilar:
-        print(kullanici.kullanici_adi + " - " + kullanici.email + " - " + "Seviye: " + str(kullanici.seviye) + " - " + "Toplam XP: " + str(kullanici.toplam_xp))
-    
+    servis.kayit_ol(kullanici_adi="Ahmet", email="ahmet@ornek.com", sifre="123")
 if __name__ == "__main__":
     main()
