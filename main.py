@@ -1,37 +1,19 @@
-from bll.code_runner import CodeRunner
+from dal.database import DatabaseManager
+from dal.kullanici_repository import KullaniciRepository
+from bll.analytics_engine import AnalyticsEngine
 
 def main():
-    runner = CodeRunner()
+    db = DatabaseManager()
+    session = db.get_session()
+    
+    kullanici_repo = KullaniciRepository(session)
+    analiz_motoru = AnalyticsEngine(kullanici_repo)
 
-    print("\n--- CODE RUNNER TESTİ ---")
-
-    basit_kod = """
-isim = "Hazal"
-print("Merhaba " + isim)
-"""
-    print("1: Basit Değişken ve Print]")
-    sonuc1 = runner.kod_calistir(basit_kod)
-    print(f"Çıktı: {sonuc1}")
-
-    matematik_kodu = """
-sayi1 = 15
-sayi2 = 30
-toplam = sayi1 + sayi2
-if toplam > 40:
-    print("Geçti")
-else:
-    print("Kaldı")
-"""
-    print("2: If-Else ve Matematiksel İşlem]")
-    sonuc2 = runner.kod_calistir(matematik_kodu)
-    print(f"Çıktı: {sonuc2}")
-
-    hatali_kod = """
-print(tanimlanmamis_degisken)
-"""
-    print("3: Hatalı Kod Yakalama]")
-    sonuc3 = runner.kod_calistir(hatali_kod)
-    print(f"Çıktı: {sonuc3}")
+    print("explode testi")
+    
+    aranan_ogrenci = "Ahmett"
+    print(f"\n {aranan_ogrenci} için özel pasta grafiği oluşturuluyor...")
+    analiz_motoru.kisiye_ozel_seviye_dagilimi_ciz(aranan_ogrenci)
 
 if __name__ == "__main__":
     main()
