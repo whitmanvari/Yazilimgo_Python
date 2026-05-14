@@ -1,44 +1,29 @@
-from datetime import date, timedelta
 from dal.database import DatabaseManager
-from dal.kullanici_repository import KullaniciRepository
-from bll.streak_servisi import StreakServisi
+from dal.ders_repository import DersRepository
+from bll.ders_servisi import DersServisi
 
 def main():
     db = DatabaseManager()
     session = db.get_session()
     
-    # Sınıfları başlatalım
-    kullanici_repo = KullaniciRepository(session)
-    streak_servisi = StreakServisi(kullanici_repo)
+    ders_repo = DersRepository(session)
+    ders_servisi = DersServisi(ders_repo)
 
-    print("Streak testi: ")
+    print("Ders servisi testi: ")
     
-    # Veritabanından Ahmett'i bul
-    kullanicilar = kullanici_repo.tum_kullanicilari_getir()
-    test_kullanici = next((k for k in kullanicilar if k.kullanici_adi == "Ahmett"), None)
+    test_ders_id = 1
+    ders = ders_servisi.ders_icerigi_getir(test_ders_id)
 
-    if test_kullanici:
-        print("1: İlk Giriş ")
-        # Test için geçmişi temizliyoruz
-        test_kullanici.son_aktif_tarihi = None 
-        test_kullanici.gun_serisi = 0
-        streak_servisi.gunluk_giris_yap(test_kullanici.kullanici_id)
+    if ders:
+        print(f"Ders Bulundu: {ders.ders_basligi}")
         
-        print("2: Aynı Gün İçinde Uygulamayı Tekrar Açma")
-        streak_servisi.gunluk_giris_yap(test_kullanici.kullanici_id)
+        yanlis_deneme = ders_servisi.cevap_dogrula(test_ders_id, "rastgele yanlis bir cevap")
+        print(f"Yanlış cevap testi sonucu: {yanlis_deneme}")
         
-        print("3: Ertesi Gün Giriş Yapma ")
-        # Dün giriş yapmış gibi tarihi 1 gün geriye alıyoruz
-        test_kullanici.son_aktif_tarihi = date.today() - timedelta(days=1)
-        streak_servisi.gunluk_giris_yap(test_kullanici.kullanici_id)
-        
-        print("4: 3 Gün Girmemezlik Yapma (")
-        # 3 gün önce giriş yapmış gibi tarihi değiştiriyoruz
-        test_kullanici.son_aktif_tarihi= date.today() - timedelta(days=3)
-        streak_servisi.gunluk_giris_yap(test_kullanici.kullanici_id)
-        
+        dogru_deneme = ders_servisi.cevap_dogrula(test_ders_id, ders.dogru_cevap)
+        print(f"Doğru cevap testi sonucu: {dogru_deneme}")
     else:
-        print("Kullanıcı veritabanında bulunamadı!")
+        print("Veritabanında ders bulunamadı.")
 
 if __name__ == "__main__":
     main()
