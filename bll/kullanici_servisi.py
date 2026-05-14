@@ -17,5 +17,15 @@ class KullaniciServisi:
     
     def giris_yap(self, kullanici_id: int, girilen_sifre: str):
         kullanici = self.repo.id_ile_getir(kullanici_id)
-        if not kullanici: return False
-        return kullanici.parola_hash == self._sifre_hashle(girilen_sifre)
+        if kullanici is None:
+            print("Hata! Böyle bir kullanıcı bulunaöadı! ")
+            return False
+        girilen_hash=self._sifre_hashle(girilen_sifre)
+        if kullanici.parola_hash == girilen_hash:
+            print(f"Giriş Başarılı! Hoş Geldin {kullanici.kullanici_adi}")
+            return True
+        else:
+            print("Hata! Hatalı şifre girdiniz.")
+            return False
+        
+    
