@@ -1,19 +1,21 @@
-from dal.database import DatabaseManager
-from dal.kullanici_repository import KullaniciRepository
-from bll.analytics_engine import AnalyticsEngine
+import tkinter as tk
+from presentation.components.xp_bar import XPBar
 
 def main():
-    db = DatabaseManager()
-    session = db.get_session()
-    
-    kullanici_repo = KullaniciRepository(session)
-    analiz_motoru = AnalyticsEngine(kullanici_repo)
+    # Ana pencereyi oluştur
+    root = tk.Tk()
+    root.title("YazılımGo - Tkinter UI Test")
+    root.geometry("400x200")
 
-    print("explode testi")
-    
-    aranan_ogrenci = "Ahmett"
-    print(f"\n {aranan_ogrenci} için özel pasta grafiği oluşturuluyor...")
-    analiz_motoru.kisiye_ozel_seviye_dagilimi_ciz(aranan_ogrenci)
+    # Kendi yazdığımız özel XPBar kutusunu ana pencereye ekliyoruz
+    xp_bileseni = XPBar(root)
+    xp_bileseni.pack(pady=50, padx=20, fill="x")
+
+    # BLL'den Ahmett'in verilerinin geldiğini varsayalım
+    xp_bileseni.guncelle(mevcut_xp=345, seviye=4)
+
+    # Pencereyi açık tut
+    root.mainloop()
 
 if __name__ == "__main__":
     main()
