@@ -1,29 +1,37 @@
-from dal.database import DatabaseManager
-from dal.ders_repository import DersRepository
-from bll.ders_servisi import DersServisi
+from bll.code_runner import CodeRunner
 
 def main():
-    db = DatabaseManager()
-    session = db.get_session()
-    
-    ders_repo = DersRepository(session)
-    ders_servisi = DersServisi(ders_repo)
+    runner = CodeRunner()
 
-    print("Ders servisi testi: ")
-    
-    test_ders_id = 1
-    ders = ders_servisi.ders_icerigi_getir(test_ders_id)
+    print("\n--- CODE RUNNER TESTİ ---")
 
-    if ders:
-        print(f"Ders Bulundu: {ders.ders_basligi}")
-        
-        yanlis_deneme = ders_servisi.cevap_dogrula(test_ders_id, "rastgele yanlis bir cevap")
-        print(f"Yanlış cevap testi sonucu: {yanlis_deneme}")
-        
-        dogru_deneme = ders_servisi.cevap_dogrula(test_ders_id, ders.dogru_cevap)
-        print(f"Doğru cevap testi sonucu: {dogru_deneme}")
-    else:
-        print("Veritabanında ders bulunamadı.")
+    basit_kod = """
+isim = "Hazal"
+print("Merhaba " + isim)
+"""
+    print("1: Basit Değişken ve Print]")
+    sonuc1 = runner.kod_calistir(basit_kod)
+    print(f"Çıktı: {sonuc1}")
+
+    matematik_kodu = """
+sayi1 = 15
+sayi2 = 30
+toplam = sayi1 + sayi2
+if toplam > 40:
+    print("Geçti")
+else:
+    print("Kaldı")
+"""
+    print("2: If-Else ve Matematiksel İşlem]")
+    sonuc2 = runner.kod_calistir(matematik_kodu)
+    print(f"Çıktı: {sonuc2}")
+
+    hatali_kod = """
+print(tanimlanmamis_degisken)
+"""
+    print("3: Hatalı Kod Yakalama]")
+    sonuc3 = runner.kod_calistir(hatali_kod)
+    print(f"Çıktı: {sonuc3}")
 
 if __name__ == "__main__":
     main()
