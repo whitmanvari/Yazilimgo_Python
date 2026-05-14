@@ -1,36 +1,44 @@
+from datetime import date, timedelta
 from dal.database import DatabaseManager
 from dal.kullanici_repository import KullaniciRepository
-from dal.kazanim_repository import KazanimRepository
-from bll.kazanim_servisi import KazanimServisi
-from seed import seed_verileri_yukle
-
+from bll.streak_servisi import StreakServisi
 
 def main():
     db = DatabaseManager()
-    db.init_db()  # Veritabanı tablolarını oluştur
-
-    seed_verileri_yukle()  
-
     session = db.get_session()
-    repo = KullaniciRepository(session)
-    kazanim_repo=KazanimRepository(session)
-    kazanim_servisi=KazanimServisi(kazanim_repo)
+    
+    # Sınıfları başlatalım
+    kullanici_repo = KullaniciRepository(session)
+    streak_servisi = StreakServisi(kullanici_repo)
 
-    print("Kazanım testi: ")
+    print("Streak testi: ")
     
-    kullanicilar = repo.tum_kullanicilari_getir()
-    test_kullanici = next((k for k in kullanicilar if k.kullanici_adi == "Ahmett"), None)                 
-    
+    # Veritabanından Ahmett'i bul
+    kullanicilar = kullanici_repo.tum_kullanicilari_getir()
+    test_kullanici = next((k for k in kullanicilar if k.kullanici_adi == "Ahmett"), None)
+
     if test_kullanici:
-        print(F"Mevcut Durum: {test_kullanici.kullanici_adi} | Seviye: {test_kullanici.seviye}")
-
-        print("Deneme")
-        kazanim_servisi.rozet_ver(kullanici_id=test_kullanici.kullanici_id, kazanim_id=1)
-        print("Aynı rozeti verirsek ifimiz çalışıyor mu bakalım")
-        kazanim_servisi.rozet_ver(kullanici_id=test_kullanici.kullanici_id, kazanim_id=1)
-
+        print("1: İlk Giriş ")
+        # Test için geçmişi temizliyoruz
+        test_kullanici.son_aktif_tarihi = None 
+        test_kullanici.gun_serisi = 0
+        streak_servisi.gunluk_giris_yap(test_kullanici.kullanici_id)
+        
+        print("2: Aynı Gün İçinde Uygulamayı Tekrar Açma")
+        streak_servisi.gunluk_giris_yap(test_kullanici.kullanici_id)
+        
+        print("3: Ertesi Gün Giriş Yapma ")
+        # Dün giriş yapmış gibi tarihi 1 gün geriye alıyoruz
+        test_kullanici.son_aktif_tarihi = date.today() - timedelta(days=1)
+        streak_servisi.gunluk_giris_yap(test_kullanici.kullanici_id)
+        
+        print("4: 3 Gün Girmemezlik Yapma (")
+        # 3 gün önce giriş yapmış gibi tarihi değiştiriyoruz
+        test_kullanici.son_aktif_tarihi= date.today() - timedelta(days=3)
+        streak_servisi.gunluk_giris_yap(test_kullanici.kullanici_id)
+        
     else:
-        print(f"{test_kullanici.kullanici_adi} kullanıcısı veritabanında yok!")
+        print("Kullanıcı veritabanında bulunamadı!")
 
 if __name__ == "__main__":
     main()
