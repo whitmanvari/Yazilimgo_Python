@@ -21,10 +21,7 @@ def main():
     root.title("YazılımGo - Öğrenci Eğitim Platformu")
     root.geometry("800x500")
 
-    #router fonksiyonu
     def sayfaya_git(hedef_ekran_adi, secilen_ders=None):
-        """Açık olan tüm ekranları gizler ve istenilen ekranı sahnede gösterir."""
-        
         ana_menu.pack_forget()
         ders_ekrani.pack_forget()
 
@@ -33,10 +30,10 @@ def main():
             
         elif hedef_ekran_adi == "DersEkrani":
             ders_ekrani.pack(fill="both", expand=True)
-            
             if secilen_ders:
-                ders_ekrani.lbl_soru.config(text=f"Görev: {secilen_ders.ders_basligi} konusunu tamamlayın.")
+                ders_ekrani.aktif_dersi_ayarla(secilen_ders)
 
+    # ekranları oluşturacağım
     ana_menu = AnaMenuEkrani(
         root, 
         kullanici_servisi, 
@@ -44,10 +41,11 @@ def main():
         sayfa_gecis_komutu=lambda ders: sayfaya_git("DersEkrani", ders)
     )
     
-    ders_ekrani = DersEkrani(root)
+    # Ders ekranına da ana menüye dönmesi için komut gönderdim
+    ders_ekrani = DersEkrani(root, ana_menuye_don_komutu=lambda: sayfaya_git("AnaMenu"))
 
-    ana_menu.verileri_yukle() # Veritabanı verilerini arayüze çeksin diye yazdım
-    sayfaya_git("AnaMenu")    # Program açıldığında ilk olarak Ana Menüyü göstersin diye yazdım
+    ana_menu.verileri_yukle()
+    sayfaya_git("AnaMenu")
 
     root.mainloop()
 
