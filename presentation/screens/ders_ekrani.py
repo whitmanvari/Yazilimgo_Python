@@ -2,12 +2,13 @@ import tkinter as tk
 from bll.code_runner import CodeRunner
 
 class DersEkrani(tk.Frame):
-    def __init__(self, parent, ana_menuye_don_komutu):
+    def __init__(self, parent, ana_menuye_don_komutu,ders_tamamlandi_komutu):
         super().__init__(parent)
         
         self.code_runner = CodeRunner()
         self.ana_menuye_don_komutu = ana_menuye_don_komutu
         self.aktif_ders = None # Hangi dersi çözdüğümüzü burada tutsun diye yazdım
+        self.ders_tamamlandi_komutu=ders_tamamlandi_komutu
 
         self.ust_panel = tk.Frame(self)
         self.ust_panel.pack(fill="x", pady=10, padx=20)
@@ -61,6 +62,9 @@ class DersEkrani(tk.Frame):
             
             if beklenen_cevap == gercek_sonuc:
                 self.txt_cikti.insert(tk.END, "\nTEBRİKLER! Görevi başarıyla tamamladınız!")
+                #eğer fonksiyon geçildiyse parametre olarak, main.py ye gitsin ve ders verisini göndersin istediğimden yazdım
+                if self.ders_tamamlandi_komutu:
+                    self.ders_tamamlandi_komutu(self.aktif_ders)
             else:
                 self.txt_cikti.insert(tk.END, "\nÇıktı beklenen cevapla eşleşmiyor. Tekrar deneyin.")
                 
