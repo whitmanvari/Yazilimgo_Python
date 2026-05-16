@@ -5,11 +5,12 @@ from presentation.components.rozet_widget import RozetWidget
 from presentation.components.ders_karti import DersKarti
 
 class AnaMenuEkrani(tk.Frame):
-    def __init__(self, parent,kullanici_servisi, ders_servisi):
+    def __init__(self, parent,kullanici_servisi, ders_servisi, sayfa_gecis_komutu):
         super().__init__(parent)
 
         self.kullanici_servisi=kullanici_servisi
         self.ders_servisi=ders_servisi
+        self.sayfa_gecis_komutu=sayfa_gecis_komutu
 
         self.aktif_kullanici_id=1
 
@@ -53,3 +54,5 @@ class AnaMenuEkrani(tk.Frame):
 
     def dersi_baslat(self, ders):
         print(f"{ders.ders_basligi} ekranına geçiliyor...")
+        if self.sayfa_gecis_komutu:
+            self.sayfa_gecis_komutu(ders)
