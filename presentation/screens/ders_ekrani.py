@@ -37,7 +37,7 @@ class DersEkrani(tk.Frame):
     def aktif_dersi_ayarla(self, ders):
         """Main.py'den çağrılıp bu ekrana hangi dersin verisini işleyeceğini söyler."""
         self.aktif_ders = ders
-        self.lbl_soru.config(text=f"Görev: {ders.ders_basligi} konusunu tamamlayın.")
+        self.lbl_soru.config(text=ders.soru_metni)
         
         # Ekran her açıldığında eski kodları ve çıktıları temizlesin diye yazdım
         self.txt_kod.delete("1.0", tk.END)

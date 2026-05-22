@@ -5,8 +5,10 @@ from entities.kazanim import KazanimTanimi
 
 def seed_verileri_yukle():
     db = DatabaseManager()
+    db.init_db()
     session = db.get_session()  
-    if session.query(DersModulu).first is not None:
+
+    if session.query(DersModulu).first() is not None:
         print("Veritabanı zaten dolu, seed işlemi atlanıyor.")
         return
     print("Seed verileri yükleniyor...")
@@ -26,12 +28,12 @@ def seed_verileri_yukle():
     ders1 = Ders(
         modul_id=modul1.modul_id,
         ders_basligi="Değişkenler ve Veri Tipleri",
-        ders_turu="coktan_secmeli",
-        soru_metni="Hangi veri tipi sayıları tutar?",
-        dogru_cevap='{"cevap": "int"}',
+        ders_turu="kod_yazma", # Kod editörümüz var
+        soru_metni="Görev: Ekrana print() fonksiyonu ile 'int' kelimesini yazdırın.", 
+        dogru_cevap="int", # Beklenen saf çıktı
         kazanilan_xp=10,
         sira_no=1
-    )
+        )
     session.add(ders1)
 
     kazanim1 = KazanimTanimi(

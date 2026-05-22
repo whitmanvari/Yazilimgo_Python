@@ -39,6 +39,9 @@ class AnaMenuEkrani(tk.Frame):
             rozetler=[]
             for k in kullanici.kazanimlar:
                 rozetler.append(kazanim.kazanim.kazanim_adi)
+                
+            for widget in self.ders_listesi_frame.winfo_children():
+                widget.destroy()
 
             self.rozet_widget.rozetleri_goster(rozetler)
         dersler = self.ders_servisi.modulun_derslerini_getir(modul_id=1)

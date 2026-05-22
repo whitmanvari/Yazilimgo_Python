@@ -1,1 +1,0 @@
---örnek modul ders verileri

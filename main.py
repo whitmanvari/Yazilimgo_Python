@@ -4,9 +4,10 @@ from dal.kullanici_repository import KullaniciRepository
 from dal.ders_repository import DersRepository
 from bll.kullanici_servisi import KullaniciServisi
 from bll.ders_servisi import DersServisi
-from bll.xp_servisi import XPServisi # YENİ EKLENDİ
+from bll.xp_servisi import XPServisi 
 from presentation.screens.ana_menu_ekrani import AnaMenuEkrani
 from presentation.screens.ders_ekrani import DersEkrani
+from presentation.screens.giris_ekrani import GirisEkrani
 
 def main():
     db = DatabaseManager()
@@ -25,27 +26,51 @@ def main():
     root.geometry("800x500")
 
     def sayfaya_git(hedef_ekran_adi, secilen_ders=None):
+        giris_ekrani.pack_forget() 
         ana_menu.pack_forget()
         ders_ekrani.pack_forget()
 
-        if hedef_ekran_adi == "AnaMenu":
+        if hedef_ekran_adi == "GirisEkrani":
+            giris_ekrani.pack(fill="both", expand=True)
+            
+        elif hedef_ekran_adi == "AnaMenu":
             ana_menu.pack(fill="both", expand=True)
             
         elif hedef_ekran_adi == "DersEkrani":
             ders_ekrani.pack(fill="both", expand=True)
             if secilen_ders:
                 ders_ekrani.aktif_dersi_ayarla(secilen_ders)
-
     #bll bağlantısı kurdum
+    def kullanici_girisi_kontrol_et(kullanici_adi):
+        # Veritabanındaki tüm kullanıcıları çekip isme göre arıyorum
+        tum_kullanicilar = kullanici_repo.tumunu_getir()
+        eslesen_kullanici = None
+        
+        for k in tum_kullanicilar:
+            if k.kullanici_adi.lower() == kullanici_adi.lower():
+                eslesen_kullanici = k
+                break
+                
+        if eslesen_kullanici:
+            # Kullanıcı bulundu! Ana menüye ID'yi ver ve sayfayı değiştir
+            ana_menu.aktif_kullanici_id = eslesen_kullanici.kullanici_id
+            ana_menu.verileri_yukle()
+            sayfaya_git("AnaMenu")
+        else:
+            # Kullanıcı yoksa ekrana hata bassın dedim
+            giris_ekrani.hata_goster("Kullanıcı bulunamadı!")
+
+
     def ders_basarili_oldu(ders):
-        aktif_kullanici_id = 1
+        aktif_kullanici_id = ana_menu.aktif_kullanici_id
         print(f"{ders.ders_basligi} başarıyla geçildi. Veritabanı güncelleniyor...")
         
         #kullanıcıya xp ekle
-        xp_servisi.xp_ekle(kullanici_id=aktif_kullanici_id, eklenecek_xp=50)
-        
-        ana_menu.verileri_yukle()
+        if aktif_kullanici_id:
+            xp_servisi.xp_ekle(kullanici_id=aktif_kullanici_id, kazanilan_xp=50)
+            ana_menu.verileri_yukle()
 
+    giris_ekrani= GirisEkrani(root, giris_komutu=kullanici_girisi_kontrol_et)
 
     ana_menu = AnaMenuEkrani(
         root, 
@@ -60,8 +85,8 @@ def main():
         ders_tamamlandi_komutu=ders_basarili_oldu # Callback ataması yaptım
     )
 
-    ana_menu.verileri_yukle()
-    sayfaya_git("AnaMenu")
+   
+    sayfaya_git("GirisEkrani")
 
     root.mainloop()
 
