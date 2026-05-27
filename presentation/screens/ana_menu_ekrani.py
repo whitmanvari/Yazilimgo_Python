@@ -5,14 +5,27 @@ from presentation.components.rozet_widget import RozetWidget
 from presentation.components.ders_karti import DersKarti
 
 class AnaMenuEkrani(tk.Frame):
-    def __init__(self, parent,kullanici_servisi, ders_servisi, sayfa_gecis_komutu):
+    def __init__(self, parent,kullanici_servisi, ders_servisi, sayfa_gecis_komutu, profile_git_komutu):
         super().__init__(parent)
 
         self.kullanici_servisi=kullanici_servisi
         self.ders_servisi=ders_servisi
         self.sayfa_gecis_komutu=sayfa_gecis_komutu
+        self.profile_git_komutu=profile_git_komutu
 
-        self.aktif_kullanici_id=1
+        self.aktif_kullanici_id= None
+
+        self.ust_panel = tk.Frame(self)
+        self.ust_panel.pack(fill="x", pady=10, padx=20)
+
+        self.lbl_hosgeldin = tk.Label(self.ust_panel, text="Hoş Geldin!", font=("Arial", 16, "bold"))
+        self.lbl_hosgeldin.pack(side="left")
+
+        self.btn_profil = tk.Button(self.ust_panel, text="👤 Profilim", font=("Arial", 10, "bold"), bg="#2196F3", fg="white", command=self.profile_git_komutu)
+        self.btn_profil.pack(side="right")
+
+        self.ana_govde = tk.Frame(self)
+        self.ana_govde.pack(fill="both", expand=True)
 
         self.sol_panel=tk.Frame(self, width=250, bg='#2b2b2b')
         self.sol_panel.pack(side="left", fill="y")
@@ -39,7 +52,7 @@ class AnaMenuEkrani(tk.Frame):
             rozetler=[]
             for k in kullanici.kazanimlar:
                 rozetler.append(kazanim.kazanim.kazanim_adi)
-                
+
             for widget in self.ders_listesi_frame.winfo_children():
                 widget.destroy()
 

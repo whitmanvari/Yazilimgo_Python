@@ -2,11 +2,18 @@ from dal.database import DatabaseManager
 from entities.modul import DersModulu
 from entities.ders import Ders
 from entities.kazanim import KazanimTanimi
+from entities.kullanici import Kullanici
 
 def seed_verileri_yukle():
     db = DatabaseManager()
     db.init_db()
     session = db.get_session()  
+    if session.query(Kullanici).first() is None:
+        kullanici1 = Kullanici(kullanici_adi="Hazal", email="hazal@marmara.edu.tr", parola_hash="1234")
+        kullanici2 = Kullanici(kullanici_adi="Ahmet", email="ahmet@gmail.com", parola_hash="1234")
+        session.add_all([kullanici1, kullanici2])
+        session.commit()
+        print("Test kullanıcıları (Hazal ve Ahmet) başarıyla eklendi!")
 
     if session.query(DersModulu).first() is not None:
         print("Veritabanı zaten dolu, seed işlemi atlanıyor.")

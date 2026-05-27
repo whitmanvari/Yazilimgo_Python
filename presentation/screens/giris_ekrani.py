@@ -18,7 +18,7 @@ class GirisEkrani(tk.Frame):
 
         # Kullanıcı Adı Etiketi
         self.lbl_kullanici = tk.Label(self.orta_panel, text="Kullanıcı Adınızı Girin:", font=("Arial", 12), bg="#2b2b2b", fg="white")
-        self.lbl_kullanici.pack(anchor="w")
+        self.lbl_kullanici.pack(pady=(10,5))
 
         # Metin Kutusu (Entry)
         self.txt_kullanici = tk.Entry(self.orta_panel, font=("Arial", 14), width=20, justify="center")
