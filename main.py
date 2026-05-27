@@ -9,6 +9,7 @@ from presentation.screens.ana_menu_ekrani import AnaMenuEkrani
 from presentation.screens.ders_ekrani import DersEkrani
 from presentation.screens.giris_ekrani import GirisEkrani
 from presentation.screens.profil_ekrani import ProfilEkrani
+from presentation.screens.kazanimlar_ekrani import KazanimlarEkrani
 
 def main():
     db = DatabaseManager()
@@ -47,6 +48,10 @@ def main():
             # Geçiş yaparken veritabanından aktif kullanıcıyı bulup profile yolluyoruz
             kullanici = kullanici_servisi.repo.id_ile_getir(ana_menu.aktif_kullanici_id)
             profil_ekrani.verileri_yukle(kullanici)
+
+        elif hedef_ekran_adi == "KazanimlarEkrani":
+            kazanimlar_ekrani.pack(fill="both", expand=True)
+            kazanimlar_ekrani.verileri_yukle([]) #en başta rozetler boş
     #bll bağlantısı kurdum
     def kullanici_girisi_kontrol_et(kullanici_adi):
         # Veritabanındaki tüm kullanıcıları çekip isme göre arıyorum
@@ -84,7 +89,8 @@ def main():
         kullanici_servisi, 
         ders_servisi, 
         sayfa_gecis_komutu=lambda ders: sayfaya_git("DersEkrani", ders),
-        profile_git_komutu=lambda: sayfaya_git("ProfilEkrani")
+        profile_git_komutu=lambda: sayfaya_git("ProfilEkrani"),
+        kazanimlara_git_komutu=lambda: sayfaya_git("KazanimlarEkrani")
     )
     
     ders_ekrani = DersEkrani(
@@ -96,6 +102,11 @@ def main():
     profil_ekrani = ProfilEkrani(
         root,
         ana_menuye_don_komutu=lambda: sayfaya_git("AnaMenu")
+    )
+    kazanimlar_ekrani = KazanimlarEkrani(
+        root,
+        ana_menuye_don_komutu=lambda: sayfaya_git("AnaMenu")
+
     )
 
    

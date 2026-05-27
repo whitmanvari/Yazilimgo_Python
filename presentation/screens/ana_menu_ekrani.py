@@ -5,13 +5,14 @@ from presentation.components.rozet_widget import RozetWidget
 from presentation.components.ders_karti import DersKarti
 
 class AnaMenuEkrani(tk.Frame):
-    def __init__(self, parent,kullanici_servisi, ders_servisi, sayfa_gecis_komutu, profile_git_komutu):
+    def __init__(self, parent,kullanici_servisi, ders_servisi, sayfa_gecis_komutu, profile_git_komutu, kazanimlara_git_komutu):
         super().__init__(parent)
 
         self.kullanici_servisi=kullanici_servisi
         self.ders_servisi=ders_servisi
         self.sayfa_gecis_komutu=sayfa_gecis_komutu
         self.profile_git_komutu=profile_git_komutu
+        self.kazanimlara_git_komutu = kazanimlara_git_komutu
 
         self.aktif_kullanici_id= None
 
@@ -38,6 +39,20 @@ class AnaMenuEkrani(tk.Frame):
 
         self.rozet_widget= RozetWidget(self.sol_panel)
         self.rozet_widget.pack(pady=20, padx=10, fill="x")
+
+        self.btn_tum_rozetler = tk.Button(
+            self.sol_panel, 
+            text="Tümünü Gör ➔", 
+            font=("Arial", 9, "bold"), 
+            fg="#4CAF50",
+            bg="#2b2b2b", 
+            bd=0, 
+            activebackground="#2b2b2b", 
+            activeforeground="#388E3C", 
+            cursor="hand2", #el şekli
+            command=self.kazanimlara_git_komutu
+        )
+        self.btn_tum_rozetler.pack(pady=(0, 20), anchor="e", padx=15)
 
         self.lbl_dersler=tk.Label(self.sag_panel, text="Mevcut Dersler", font=("Arial", 12, "bold"), bg="#ffffff")
         self.lbl_dersler.pack(pady=20, padx=10, anchor="w")
