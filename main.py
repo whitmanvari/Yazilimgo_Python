@@ -32,6 +32,7 @@ def main():
         ana_menu.pack_forget()
         ders_ekrani.pack_forget()
         profil_ekrani.pack_forget()
+        kazanimlar_ekrani.pack_forget()
 
         if hedef_ekran_adi == "GirisEkrani":
             giris_ekrani.pack(fill="both", expand=True)
