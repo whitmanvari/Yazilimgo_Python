@@ -23,16 +23,39 @@ def seed_verileri_yukle():
 
     if session.query(DersModulu).first() is None:
         modul1 = DersModulu(modul_adi="Python Temelleri", aciklama="Programlamaya giriş yapıyoruz.", dil="Python", sira_no=1)
-        modul2 = DersModulu(modul_adi="Veritabanı Mantığı", aciklama="SQLite ve Python Entegrasyonu.", dil="SQL", sira_no=2)
-        session.add_all([modul1, modul2])
+        session.add(modul1)
         session.commit()
 
-        ders1 = Ders(modul_id=modul1.modul_id, ders_basligi="1. Değişkenler ve Veri Tipleri", ders_turu="kod_yazma", soru_metni="Görev: Ekrana print() fonksiyonu ile 'int' yazdırın.", dogru_cevap="int", kazanilan_xp=10, sira_no=1)
-        ders2 = Ders(modul_id=modul1.modul_id, ders_basligi="2. Döngülere Giriş", ders_turu="kod_yazma", soru_metni="Görev: Ekrana print() ile 'merhaba' yazdırın.", dogru_cevap="merhaba", kazanilan_xp=20, sira_no=2)
-        ders3 = Ders(modul_id=modul1.modul_id, ders_basligi="3. Fonksiyonlar", ders_turu="kod_yazma", soru_metni="Görev: Ekrana 'def' anahtar kelimesini yazdırın.", dogru_cevap="def", kazanilan_xp=30, sira_no=3)
-        ders4 = Ders(modul_id=modul2.modul_id, ders_basligi="1. Select Sorgusu", ders_turu="kod_yazma", soru_metni="Görev: Ekrana 'SELECT' anahtar kelimesini yazdırın.", dogru_cevap="SELECT", kazanilan_xp=50, sira_no=1)
+        # GERÇEKÇİ VE KAPSAMLI PYTHON DERSLERİ
+        ders1 = Ders(modul_id=modul1.modul_id, ders_basligi="1. Ekrana Yazdırma", ders_turu="kod_yazma", 
+                     soru_metni="Görev: print() fonksiyonunu kullanarak ekrana Merhaba kelimesini yazdırın.", 
+                     dogru_cevap="Merhaba", kazanilan_xp=10, sira_no=1)
+        
+        ders2 = Ders(modul_id=modul1.modul_id, ders_basligi="2. Değişken Tanımlama", ders_turu="kod_yazma", 
+                     soru_metni="Görev: x adında bir değişken oluşturun, içine 50 değerini atayın ve ekrana yazdırın.\nx = 50\nprint(x)", 
+                     dogru_cevap="50", kazanilan_xp=20, sira_no=2)
+        
+        ders3 = Ders(modul_id=modul1.modul_id, ders_basligi="3. Matematiksel İşlemler", ders_turu="kod_yazma", 
+                     soru_metni="Görev: 15 ile 25'i toplayıp sonucu print() ile ekrana yazdırın.", 
+                     dogru_cevap="40", kazanilan_xp=20, sira_no=3)
+        
+        ders4 = Ders(modul_id=modul1.modul_id, ders_basligi="4. Metin (String) Birleştirme", ders_turu="kod_yazma", 
+                     soru_metni="Görev: ad = 'Yazilim' ve soyad = 'Go' değişkenlerini toplayarak print() ile yazdırın.", 
+                     dogru_cevap="YazilimGo", kazanilan_xp=30, sira_no=4)
 
-        session.add_all([ders1, ders2, ders3, ders4])
+        ders5 = Ders(modul_id=modul1.modul_id, ders_basligi="5. Listeler (Diziler)", ders_turu="kod_yazma", 
+                     soru_metni="Görev: sayilar = [10, 20, 30] listesinin ilk elemanını (0. indeks) ekrana yazdırın.", 
+                     dogru_cevap="10", kazanilan_xp=40, sira_no=5)
+
+        ders6 = Ders(modul_id=modul1.modul_id, ders_basligi="6. For Döngüsü", ders_turu="kod_yazma", 
+                     soru_metni="Görev: for döngüsü ile 0'dan 2'ye kadar olan sayıları alt alta yazdırın.\nfor i in range(3):\n    print(i)", 
+                     dogru_cevap="0\n1\n2", kazanilan_xp=50, sira_no=6)
+                     
+        ders7 = Ders(modul_id=modul1.modul_id, ders_basligi="7. Koşullu Durumlar (If-Else)", ders_turu="kod_yazma", 
+                     soru_metni="Görev: x = 10 değişkeni 5'ten büyükse ekrana Buyuk yazdırın.\nif x > 5:\n    print('Buyuk')", 
+                     dogru_cevap="Buyuk", kazanilan_xp=60, sira_no=7)
+
+        session.add_all([ders1, ders2, ders3, ders4, ders5, ders6, ders7])
         session.commit()
 
     if session.query(KazanimTanimi).first() is None:

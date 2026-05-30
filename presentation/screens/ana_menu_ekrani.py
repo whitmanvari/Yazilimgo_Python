@@ -28,10 +28,10 @@ class AnaMenuEkrani(tk.Frame):
         self.ana_govde = tk.Frame(self)
         self.ana_govde.pack(fill="both", expand=True)
 
-        self.sol_panel=tk.Frame(self, width=250, bg='#2b2b2b')
+        self.sol_panel = tk.Frame(self.ana_govde, width=250, bg='#2b2b2b')
         self.sol_panel.pack(side="left", fill="y")
 
-        self.sag_panel=tk.Frame(self, bg="#ffffff")
+        self.sag_panel = tk.Frame(self.ana_govde, bg="#ffffff")
         self.sag_panel.pack(side="right", fill="both", expand=True)
 
         self.xp_bar = XPBar(self.sol_panel)
@@ -57,7 +57,7 @@ class AnaMenuEkrani(tk.Frame):
         self.lbl_dersler=tk.Label(self.sag_panel, text="Mevcut Dersler", font=("Arial", 12, "bold"), bg="#ffffff")
         self.lbl_dersler.pack(pady=20, padx=10, anchor="w")
 
-        self.ders_listesi_frame= tk.Frame(self,self.sag_panel, bg="#ffffff")
+        self.ders_listesi_frame = tk.Frame(self.sag_panel, bg="#ffffff")
         self.ders_listesi_frame.pack(fill="both", expand=True, padx=20)
 
     def verileri_yukle(self):
@@ -74,14 +74,21 @@ class AnaMenuEkrani(tk.Frame):
             self.rozet_widget.rozetleri_goster(rozetler)
         dersler = self.ders_servisi.modulun_derslerini_getir(modul_id=1)
         if dersler:
+            # Kullanıcının daha önceden başarıyla bitirdiği derslerin ID'lerini bir listeye çıkarıyorum
+            tamamlanan_idler = [ilerleme.ders_id for ilerleme in kullanici.ilerlemeler if ilerleme.durum == 'tamamlandi']
+
             for ders in dersler:
+                # Bu dersin ID'si, tamamlananlar listesinde var mı kontrol ediyorum
+                durum_tamamlandi = ders.ders_id in tamamlanan_idler
+
                 kart = DersKarti(
                     self.ders_listesi_frame,
                     ders.ders_basligi,
                     ders.ders_turu,
-                    lambda d=ders: self.sayfa_gecis_komutu(d)
+                    lambda d= ders: self.dersi_baslat(d),
+                    tamamlandi_mi=durum_tamamlandi
                 )
-                kart.pack(pady=10, fill="x", padx=10)
+                kart.pack(pady=5, fill="x")
 
     def dersi_baslat(self, ders):
         print(f"{ders.ders_basligi} ekranına geçiliyor...")

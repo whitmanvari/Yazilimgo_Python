@@ -96,16 +96,40 @@ def main():
             giris_ekrani.hata_goster("Bu isim veya e-posta zaten kullanımda (veya şifre kısa)!")
 
     def ders_basarili_oldu(ders):
-        aktif_kullanici_id = ana_menu.aktif_kullanici_id
-        print(f"{ders.ders_basligi} başarıyla geçildi. Veritabanı güncelleniyor...")
+        aktif_kullanici_id = ana_menu.aktif_kullanici_id 
+        kullanici = kullanici_servisi.repo.id_ile_getir(aktif_kullanici_id)
         
-        #kullanıcıya xp ekle
-        if aktif_kullanici_id:
-            xp_servisi.xp_ekle(kullanici_id=aktif_kullanici_id, kazanilan_xp=50)
-            yeni_rozetler= kazanim_servisi.rozetleri_kontrol_et_ve_ver(aktif_kullanici_id)
-            if yeni_rozetler:
-                for r in yeni_rozetler:
-                    print(f"Yeni rozet kazanıldı! {r.kazanim_adi}")
+        if kullanici:
+            # Acaba bu dersi daha önce geçmiş miydi?
+            zaten_tamamlandi = any(i.ders_id == ders.ders_id and i.durum == 'tamamlandi' for i in kullanici.ilerlemeler)
+
+            if not zaten_tamamlandi:
+                print(f"{ders.ders_basligi} İLK KEZ geçildi. {ders.kazanilan_xp} XP ekleniyor...")
+                
+                # XP'yi versin önce
+                xp_servisi.xp_ekle(kullanici_id=aktif_kullanici_id, kazanilan_xp=ders.kazanilan_xp)
+                
+                # İlerleme Kaydını veritabanına eklesin
+                from entities.ilerleme import IlerlemeKaydi
+                from datetime import datetime
+                yeni_ilerleme = IlerlemeKaydi(
+                    kullanici_id=aktif_kullanici_id,
+                    ders_id=ders.ders_id,
+                    durum="tamamlandi",
+                    tamamlanma_tarihi=datetime.now(),
+                    kazanilan_xp=ders.kazanilan_xp
+                )
+                kullanici_repo.session.add(yeni_ilerleme)
+                kullanici_repo.session.commit()
+
+                # Rozet kontrolü yapsın
+                yeni_rozetler = kazanim_servisi.rozetleri_kontrol_et_ve_ver(aktif_kullanici_id)
+                if yeni_rozetler:
+                    for r in yeni_rozetler:
+                        print(f"🎉 YENİ ROZET KAZANILDI: {r.kazanim_adi} 🎉")
+            else:
+                print("Bu ders zaten daha önce tamamlanmış. Tekrar çözüldü, ekstra XP verilmedi.")
+            
             ana_menu.verileri_yukle()
 
     analytics_engine = AnalyticsEngine(kullanici_repo)
