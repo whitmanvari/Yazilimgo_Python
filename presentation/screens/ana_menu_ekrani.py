@@ -57,8 +57,25 @@ class AnaMenuEkrani(tk.Frame):
         self.lbl_dersler=tk.Label(self.sag_panel, text="Mevcut Dersler", font=("Arial", 12, "bold"), bg="#ffffff")
         self.lbl_dersler.pack(pady=20, padx=10, anchor="w")
 
-        self.ders_listesi_frame = tk.Frame(self.sag_panel, bg="#ffffff")
-        self.ders_listesi_frame.pack(fill="both", expand=True, padx=20)
+        self.canvas = tk.Canvas(self.sag_panel, bg="#ffffff", highlightthickness=0)
+        self.scrollbar = tk.Scrollbar(self.sag_panel, orient="vertical", command=self.canvas.yview)
+        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+
+        self.ders_listesi_frame = tk.Frame(self.canvas, bg="#ffffff")
+        self.ders_listesi_frame.bind(
+            "<Configure>",
+            lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+        )
+        self.canvas_frame = self.canvas.create_window((0, 0), window=self.ders_listesi_frame, anchor="nw")
+        self.canvas.bind('<Configure>', lambda e: self.canvas.itemconfig(self.canvas_frame, width=e.width))
+        self.canvas.pack(side="left", fill="both", expand=True, padx=(20, 0), pady=10)
+        self.scrollbar.pack(side="right", fill="y", pady=10, padx=(0, 10))
+        
+        # Fare Tekerleği Desteği (Linux ve Windows için)
+        self.canvas.bind_all("<Button-4>", lambda e: self.canvas.yview_scroll(-1, "units")) # Linux yukarı
+        self.canvas.bind_all("<Button-5>", lambda e: self.canvas.yview_scroll(1, "units"))  # Linux aşağı
+        self.canvas.bind_all("<MouseWheel>", lambda e: self.canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+
 
     def verileri_yukle(self):
         kullanici=self.kullanici_servisi.repo.id_ile_getir(self.aktif_kullanici_id)
