@@ -20,5 +20,5 @@ class KazanimTanimi(Base):
     ikon_adi: Mapped[str|None] = mapped_column(String(50), nullable=True)
     kosul_turu: Mapped[str] = mapped_column(String(30), nullable=False)
     kosul_degeri: Mapped[int] = mapped_column(Integer, nullable=False)
-
+    #bir rozeti birden fazla kişi kazanabilir
     kullanici_kazanimlari: Mapped[list["KullaniciKazanim"]] = relationship(back_populates="kazanim_tanimi", cascade="all, delete-orphan")

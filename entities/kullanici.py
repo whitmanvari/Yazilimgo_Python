@@ -24,6 +24,6 @@ class Kullanici(Base):
     kazanimlar:   Mapped[list["KullaniciKazanim"]] = relationship(back_populates="kullanici", cascade="all, delete-orphan")
 
     #c#taki toString() metodunu ezmeye benzer bir şekilde, kullanıcı nesnesinin okunabilir bir temsilini sağlar.
-    def _repr__(self) -> str:
+    def __repr__(self) -> str:
         return f"<Kullanici {self.kullanici_adi} | Seviye {self.seviye}>"
      #kullanılan <> işareti tamamen görsel bir tercih. Best Practise'ler arasında, "Veritabanı Objesi / Sınıf Temsili" olduğunu ilk bakışta anlamak için geleneksel olarak bu ok işaretlerini kullanırlar.
