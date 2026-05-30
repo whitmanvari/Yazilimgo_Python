@@ -66,7 +66,7 @@ class AnaMenuEkrani(tk.Frame):
             self.xp_bar.guncelle(kullanici.toplam_xp, kullanici.seviye)
             rozetler=[]
             for k in kullanici.kazanimlar:
-                rozetler.append(kazanim.kazanim.kazanim_adi)
+                rozetler.append(k.kazanim_tanimi.kazanim_adi)
 
             for widget in self.ders_listesi_frame.winfo_children():
                 widget.destroy()

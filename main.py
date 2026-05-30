@@ -2,14 +2,17 @@ import tkinter as tk
 from dal.database import DatabaseManager
 from dal.kullanici_repository import KullaniciRepository
 from dal.ders_repository import DersRepository
+from dal.kazanim_repository import KazanimRepository
 from bll.kullanici_servisi import KullaniciServisi
 from bll.ders_servisi import DersServisi
 from bll.xp_servisi import XPServisi 
+from bll.kazanim_servisi import KazanimServisi
 from presentation.screens.ana_menu_ekrani import AnaMenuEkrani
 from presentation.screens.ders_ekrani import DersEkrani
 from presentation.screens.giris_ekrani import GirisEkrani
 from presentation.screens.profil_ekrani import ProfilEkrani
 from presentation.screens.kazanimlar_ekrani import KazanimlarEkrani
+from bll.analytics_engine import AnalyticsEngine
 
 def main():
     db = DatabaseManager()
@@ -17,9 +20,12 @@ def main():
     
     kullanici_repo = KullaniciRepository(session)
     ders_repo = DersRepository(session)
+    kazanim_repo=KazanimRepository(session)
     
     kullanici_servisi = KullaniciServisi(kullanici_repo)
     ders_servisi = DersServisi(ders_repo)
+    
+    kazanim_servisi=KazanimServisi(kazanim_repo, kullanici_repo)
     
     xp_servisi = XPServisi(kullanici_repo) 
 
@@ -49,30 +55,46 @@ def main():
             # Geçiş yaparken veritabanından aktif kullanıcıyı bulup profile yolluyoruz
             kullanici = kullanici_servisi.repo.id_ile_getir(ana_menu.aktif_kullanici_id)
             profil_ekrani.verileri_yukle(kullanici)
+        elif hedef_ekran_adi == "ProfilEkrani":
+            profil_ekrani.pack(fill="both", expand=True)
+            kullanici = kullanici_servisi.repo.id_ile_getir(ana_menu.aktif_kullanici_id)
+            
+            # Öğrenci profile girer girmez güncel tabloyu anlık olarak çizdirip kaydediyoruz
+            analytics_engine.xp_liderlik_grafigi_ciz()
+            profil_ekrani.verileri_yukle(kullanici)
 
         elif hedef_ekran_adi == "KazanimlarEkrani":
             kazanimlar_ekrani.pack(fill="both", expand=True)
-            kazanimlar_ekrani.verileri_yukle([]) #en başta rozetler boş
+            kullanici = kullanici_servisi.repo.id_ile_getir(ana_menu.aktif_kullanici_id)
+            
+            kazanilan_rozetler = []
+            if kullanici and kullanici.kazanimlar:
+                for k in kullanici.kazanimlar:
+                    kazanilan_rozetler.append(k.kazanim_tanimi)
+            kazanimlar_ekrani.verileri_yukle(kazanilan_rozetler) #en başta rozetler boş
     #bll bağlantısı kurdum
     def kullanici_girisi_kontrol_et(kullanici_adi):
-        # Veritabanındaki tüm kullanıcıları çekip isme göre arıyorum
         tum_kullanicilar = kullanici_repo.tum_kullanicilari_getir()
-        eslesen_kullanici = None
-        
-        for k in tum_kullanicilar:
-            if k.kullanici_adi.lower() == kullanici_adi.lower():
-                eslesen_kullanici = k
-                break
+        eslesen_kullanici = next((k for k in tum_kullanicilar if k.kullanici_adi.lower() == kullanici_adi.lower()), None)
                 
         if eslesen_kullanici:
-            # Kullanıcı bulundu! Ana menüye ID'yi ver ve sayfayı değiştir
-            ana_menu.aktif_kullanici_id = eslesen_kullanici.kullanici_id
-            ana_menu.verileri_yukle()
-            sayfaya_git("AnaMenu")
+            # Şifreyi BLL katmanında hashleyip kontrol ediyoruz
+            if kullanici_servisi.giris_yap(eslesen_kullanici.kullanici_id, sifre):
+                ana_menu.aktif_kullanici_id = eslesen_kullanici.kullanici_id
+                ana_menu.verileri_yukle()
+                sayfaya_git("AnaMenu")
+            else:
+                giris_ekrani.hata_goster("Hatalı şifre girdiniz!")
         else:
-            # Kullanıcı yoksa ekrana hata bassın dedim
             giris_ekrani.hata_goster("Kullanıcı bulunamadı!")
 
+    def kullanici_kaydi_yap(kullanici_adi, email, sifre):
+        yeni_kullanici = kullanici_servisi.kayit_ol(kullanici_adi, email, sifre)
+        if yeni_kullanici:
+            giris_ekrani.hata_goster("Kayıt başarılı! Şimdi giriş yapabilirsin.", basarili_mi=True)
+            giris_ekrani.mod_degistir() # Başarılı kayıttan sonra giriş ekranına döndür
+        else:
+            giris_ekrani.hata_goster("Bu isim veya e-posta zaten kullanımda (veya şifre kısa)!")
 
     def ders_basarili_oldu(ders):
         aktif_kullanici_id = ana_menu.aktif_kullanici_id
@@ -81,10 +103,15 @@ def main():
         #kullanıcıya xp ekle
         if aktif_kullanici_id:
             xp_servisi.xp_ekle(kullanici_id=aktif_kullanici_id, kazanilan_xp=50)
+            yeni_rozetler= kazanim_servisi.rozetleri_kontrol_et_ve_ver(aktif_kullanici_id)
+            if yeni_rozetler:
+                for r in yeni_rozetler:
+                    print(f"Yeni rozet kazanıldı! {r.kazanim_adi}")
             ana_menu.verileri_yukle()
 
-    giris_ekrani= GirisEkrani(root, giris_komutu=kullanici_girisi_kontrol_et)
+    analytics_engine = AnalyticsEngine(kullanici_repo)
 
+    giris_ekrani = GirisEkrani(root, giris_komutu=kullanici_girisi_kontrol_et, kayit_komutu=kullanici_kaydi_yap)
     ana_menu = AnaMenuEkrani(
         root, 
         kullanici_servisi, 
