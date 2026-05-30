@@ -73,12 +73,11 @@ def main():
                     kazanilan_rozetler.append(k.kazanim_tanimi)
             kazanimlar_ekrani.verileri_yukle(kazanilan_rozetler) #en başta rozetler boş
     #bll bağlantısı kurdum
-    def kullanici_girisi_kontrol_et(kullanici_adi):
+    def kullanici_girisi_kontrol_et(kullanici_adi, sifre):
         tum_kullanicilar = kullanici_repo.tum_kullanicilari_getir()
         eslesen_kullanici = next((k for k in tum_kullanicilar if k.kullanici_adi.lower() == kullanici_adi.lower()), None)
                 
         if eslesen_kullanici:
-            # Şifreyi BLL katmanında hashleyip kontrol ediyoruz
             if kullanici_servisi.giris_yap(eslesen_kullanici.kullanici_id, sifre):
                 ana_menu.aktif_kullanici_id = eslesen_kullanici.kullanici_id
                 ana_menu.verileri_yukle()
@@ -92,7 +91,7 @@ def main():
         yeni_kullanici = kullanici_servisi.kayit_ol(kullanici_adi, email, sifre)
         if yeni_kullanici:
             giris_ekrani.hata_goster("Kayıt başarılı! Şimdi giriş yapabilirsin.", basarili_mi=True)
-            giris_ekrani.mod_degistir() # Başarılı kayıttan sonra giriş ekranına döndür
+            giris_ekrani.mod_degistir()
         else:
             giris_ekrani.hata_goster("Bu isim veya e-posta zaten kullanımda (veya şifre kısa)!")
 

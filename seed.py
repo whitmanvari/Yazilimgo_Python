@@ -3,6 +3,8 @@ from entities.modul import DersModulu
 from entities.ders import Ders
 from entities.kazanim import KazanimTanimi
 from entities.kullanici import Kullanici
+import hashlib
+from dal.database import DatabaseManager
 
 def seed_verileri_yukle():
     db = DatabaseManager()
@@ -10,10 +12,12 @@ def seed_verileri_yukle():
     session = db.get_session()
 
     if session.query(Kullanici).first() is None:
-        k1 = Kullanici(kullanici_adi="Hazal", email="hazal@marmara.edu.tr", parola_hash="1234")
-        k2 = Kullanici(kullanici_adi="Ahmet", email="ahmet@network.com", parola_hash="1234")
-        k3 = Kullanici(kullanici_adi="Tahsin", email="tahsin@gmail.com", parola_hash="1234")
-        k4 = Kullanici(kullanici_adi="Abdullah", email="abdullah@gmail.com", parola_hash="1234")
+        ornek_sifre_hash = hashlib.sha256("1234".encode()).hexdigest()
+        k1 = Kullanici(kullanici_adi="Hazal", email="hazal@marmara.edu.tr", parola_hash=ornek_sifre_hash)
+        k2 = Kullanici(kullanici_adi="Ahmet", email="ahmet@network.com", parola_hash=ornek_sifre_hash)
+        k3 = Kullanici(kullanici_adi="Tahsin", email="tahsin@gmail.com", parola_hash=ornek_sifre_hash)
+        k4 = Kullanici(kullanici_adi="Abdullah", email="abdullah@gmail.com", parola_hash=ornek_sifre_hash)
+        
         session.add_all([k1, k2, k3, k4])
         session.commit()
 

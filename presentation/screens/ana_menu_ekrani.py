@@ -79,9 +79,9 @@ class AnaMenuEkrani(tk.Frame):
                     self.ders_listesi_frame,
                     ders.ders_basligi,
                     ders.ders_turu,
-                    lambda d= ders: self.dersi_baslat(d)
+                    lambda d=ders: self.sayfa_gecis_komutu(d)
                 )
-                kart.pack(pady=5, fill="x")
+                kart.pack(pady=10, fill="x", padx=10)
 
     def dersi_baslat(self, ders):
         print(f"{ders.ders_basligi} ekranına geçiliyor...")
