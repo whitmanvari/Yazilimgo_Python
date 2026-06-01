@@ -7,34 +7,28 @@ class AnalyticsEngine:
     def __init__(self, kullanici_repo: KullaniciRepository):
         self.repo=kullanici_repo
     def xp_liderlik_grafigi_ciz(self):
-        kullanicilar= self.repo.tum_kullanicilari_getir()
+        kullanicilar = self.repo.tum_kullanicilari_getir()
         if not kullanicilar:
-            print("Grafik çizilecek kullanıcı verisi bulunamadı. ")
             return
-        #list comprehension(liste üretici)--> kullanıcılar içindeki her bir k için k.kullanici_adi'ni al ve yeni bir liste oluştur demek
+
         isimler = [k.kullanici_adi for k in kullanicilar]
         xpler = [k.toplam_xp for k in kullanicilar]
 
-        xp_array= np.array(xpler)
-        #mean matematikteki aritmetik ortalama demektir. xp'leri toplar ve kişi sayısına böler
-        ortalama_xp = np.mean(xp_array)
-
+        # Grafik boyutu (10 genişlik, 6 yükseklik)
         plt.figure(figsize=(10,6))
+        
         plt.bar(isimler, xpler, color='#4CAF50')
-
-        plt.axhline(y=ortalama_xp, color='r', linestyle='--', label=f'Ortalama XP ({ortalama_xp: .1f})')
-
-        plt.title("YazılımGo - Liderlik Tablosu ve XP Dağılımı")
+        
+        # Etiketler
+        plt.title("YazılımGo - Liderlik Tablosu")
         plt.xlabel("Öğrenciler")
-        plt.ylabel("Kazanılan Toplam XP")
-        plt.legend()
-        plt.tight_layout() #isimler uzunsa kenar boşluklarını otomatik sık, yerleştir
+        plt.ylabel("Toplam XP")
 
-        dosya_adi= "analiz_liderlik_tablosu.png"
-        plt.savefig(dosya_adi)
+        plt.tight_layout() 
+        
+        # Resmi Kaydet (bbox_inches='tight' demek: "Kenarları kesme, hepsini al" demektir)
+        plt.savefig("analiz_liderlik_tablosu.png", bbox_inches='tight')
         plt.close()
-
-        print(f"Liderlik grafiği çizildi! {dosya_adi} olarak kaydedildi.")
 
     def seviye_dagilimi_ciz(self):
         kullanicilar=self.repo.tum_kullanicilari_getir()

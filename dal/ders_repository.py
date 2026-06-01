@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from entities.ders import Ders
-
+ #dependency injection yaptım. 
 class DersRepository:
     def __init__(self, session: Session):
         self.session=session

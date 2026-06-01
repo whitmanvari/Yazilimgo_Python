@@ -39,11 +39,11 @@ class KazanimlarEkrani(tk.Frame):
         sutun = 0
         for kazanim in kazanimlar:
             # Rozet Kartı
-            kart = tk.Frame(self.rozetler_alani, bg="#f9f9f9", bd=1, relief="ridge", padx=10, pady=10)
+            kart = tk.Frame(self.rozetler_alani, bg="#ffffff", bd=1, relief="ridge", padx=10, pady=10)
             kart.grid(row=satir, column=sutun, padx=10, pady=10)
 
             # Rozet İkonu 
-            ikon = tk.Label(kart, text="🎖️", font=("Arial", 32), bg="#f9f9f9")
+            ikon = tk.Label(kart, text="🎖️", font=("Arial", 32), bg="#ffffff")
             ikon.pack()
 
             # Rozet Adı

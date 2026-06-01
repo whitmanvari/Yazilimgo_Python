@@ -32,7 +32,7 @@ def seed_verileri_yukle():
                      dogru_cevap="Merhaba", kazanilan_xp=10, sira_no=1)
         
         ders2 = Ders(modul_id=modul1.modul_id, ders_basligi="2. Değişken Tanımlama", ders_turu="kod_yazma", 
-                     soru_metni="Görev: x adında bir değişken oluşturun, içine 50 değerini atayın ve ekrana yazdırın.\nx = 50\nprint(x)", 
+                     soru_metni="Görev: x adında bir değişken oluşturun, içine 50 değerini atayın ve ekrana yazdırın", 
                      dogru_cevap="50", kazanilan_xp=20, sira_no=2)
         
         ders3 = Ders(modul_id=modul1.modul_id, ders_basligi="3. Matematiksel İşlemler", ders_turu="kod_yazma", 
@@ -48,19 +48,19 @@ def seed_verileri_yukle():
                      dogru_cevap="10", kazanilan_xp=40, sira_no=5)
 
         ders6 = Ders(modul_id=modul1.modul_id, ders_basligi="6. For Döngüsü", ders_turu="kod_yazma", 
-                     soru_metni="Görev: for döngüsü ile 0'dan 2'ye kadar olan sayıları alt alta yazdırın.\nfor i in range(3):\n    print(i)", 
+                     soru_metni="Görev: for döngüsü ile 0'dan 2'ye kadar olan sayıları alt alta yazdırın.", 
                      dogru_cevap="0\n1\n2", kazanilan_xp=50, sira_no=6)
                      
         ders7 = Ders(modul_id=modul1.modul_id, ders_basligi="7. Koşullu Durumlar (If-Else)", ders_turu="kod_yazma", 
-                     soru_metni="Görev: x = 10 değişkeni 5'ten büyükse ekrana Buyuk yazdırın.\nif x > 5:\n    print('Buyuk')", 
+                     soru_metni="Görev: x = 10 değişkeni 5'ten büyükse ekrana Buyuk yazdırın.", 
                      dogru_cevap="Buyuk", kazanilan_xp=60, sira_no=7)
 
         session.add_all([ders1, ders2, ders3, ders4, ders5, ders6, ders7])
         session.commit()
 
     if session.query(KazanimTanimi).first() is None:
-        rozet1 = KazanimTanimi(kazanim_adi="İlk Kan", aciklama="İlk dersini başarıyla tamamladın!", ikon_adi="ilk_kan", kosul_turu="ilk_ders", kosul_degeri=1)
-        rozet2 = KazanimTanimi(kazanim_adi="Döngü Ustası", aciklama="Döngüler konusunda pratik yaptın.", ikon_adi="dongu", kosul_turu="ders_sayisi", kosul_degeri=5)
+        rozet1 = KazanimTanimi(kazanim_adi="İlk Deneme", aciklama="İlk dersini başarıyla tamamladın!", ikon_adi="ilk_deneme", kosul_turu="ilk_ders", kosul_degeri=1)
+        rozet2 = KazanimTanimi(kazanim_adi="Döngü Başarısı", aciklama="Döngüler konusunda pratik yaptın.", ikon_adi="dongu", kosul_turu="ders_sayisi", kosul_degeri=5)
         rozet3 = KazanimTanimi(kazanim_adi="Hata Avcısı", aciklama="Sistemi hiç çökertmeden kodu çalıştırdın.", ikon_adi="hata", kosul_turu="gun_serisi", kosul_degeri=3)
         rozet4 = KazanimTanimi(kazanim_adi="Veri Bükücü", aciklama="SQL Modülüne başarıyla giriş yaptın.", ikon_adi="sql", kosul_turu="xp_esigi", kosul_degeri=200)
         

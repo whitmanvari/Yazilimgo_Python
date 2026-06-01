@@ -21,7 +21,7 @@ class RozetWidget(tk.Frame):
         for rozet_adi in rozet_listesi:
             rozet_etiketi = tk.Label(self.rozet_alani,
                                      text=f"{rozet_adi}",
-                                     bg='#FFD700', fg="black",
+                                     bg="#A6FF00", fg="black",
                                      font=("Arial", 10, "bold"),
                                      padx=5, pady=2)
             rozet_etiketi.pack(side="left", padx=5)

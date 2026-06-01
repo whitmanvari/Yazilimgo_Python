@@ -15,13 +15,13 @@ class KazanimServisi:
         # Sistemdeki tüm rozet kurallarını getir
         tum_rozetler = self.kazanim_repo.tum_kazanim_tanimlarini_getir() 
         
-        # 2. Kullanıcının zaten aldığı rozetleri getir (Tekrar aynı rozeti vermemek için)
+        # Kullanıcının zaten aldığı rozetleri getir (Tekrar aynı rozeti vermemek için)
         sahip_olunanlar = self.kazanim_repo.kullanicinin_kazanimlarini_getir(kullanici_id)
         sahip_olunan_id_listesi = [k.kazanim_id for k in sahip_olunanlar]
 
         yeni_kazanilanlar = []
 
-        # 3. Rozetleri tek tek kontrol et
+        # Rozetleri tek tek kontrol et
         for rozet in tum_rozetler:
             if rozet.kazanim_id in sahip_olunan_id_listesi:
                 continue 

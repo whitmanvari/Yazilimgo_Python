@@ -1,1 +1,0 @@
-#tüm ekranların türeyeceği temel ekran sınıfı, ortak özellikler ve yöntemler burada 

@@ -1,8 +1,8 @@
 import tkinter as tk
-from entities import kazanim
 from presentation.components.xp_bar import XPBar
 from presentation.components.rozet_widget import RozetWidget
 from presentation.components.ders_karti import DersKarti
+
 
 class AnaMenuEkrani(tk.Frame):
     def __init__(self, parent,kullanici_servisi, ders_servisi, sayfa_gecis_komutu, profile_git_komutu, kazanimlara_git_komutu):
@@ -35,7 +35,7 @@ class AnaMenuEkrani(tk.Frame):
         self.sag_panel.pack(side="right", fill="both", expand=True)
 
         self.xp_bar = XPBar(self.sol_panel)
-        self.xp_bar.pack(pady=10, padx=10, fill="x")
+        self.xp_bar.pack(pady=20, padx=20, fill="x")
 
         self.rozet_widget= RozetWidget(self.sol_panel)
         self.rozet_widget.pack(pady=20, padx=10, fill="x")

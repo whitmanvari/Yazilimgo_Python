@@ -152,7 +152,9 @@ def main():
 
     profil_ekrani = ProfilEkrani(
         root,
-        ana_menuye_don_komutu=lambda: sayfaya_git("AnaMenu")
+        ana_menuye_don_komutu=lambda: sayfaya_git("AnaMenu"),
+        kullanici_repo=kullanici_repo
+
     )
     kazanimlar_ekrani = KazanimlarEkrani(
         root,

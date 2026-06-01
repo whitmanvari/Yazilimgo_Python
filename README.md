@@ -15,7 +15,7 @@ Proje, modülerlik ve sürdürülebilirlik için **N-Tier (Katmanlı Mimari)** y
 * **Singleton Pattern:** Veritabanı bağlantısında tekil nesne yönetimi.
 * **Strategy Pattern:** Farklı zorluk seviyelerine göre puan hesaplama algoritmaları.
 
-
+```markdown
 ## 🗺️ Veritabanı Mimarisi (ER Şeması)
 ```mermaid
 erDiagram

@@ -61,7 +61,7 @@ class DersEkrani(tk.Frame):
             gercek_sonuc = sonuc.strip().lower()
             
             if beklenen_cevap == gercek_sonuc:
-                self.txt_cikti.insert(tk.END, "\nTEBRİKLER! Görevi başarıyla tamamladınız!")
+                self.txt_cikti.insert(tk.END, "\nTEBRİKLER! ")
                 #eğer fonksiyon geçildiyse parametre olarak, main.py ye gitsin ve ders verisini göndersin istediğimden yazdım
                 if self.ders_tamamlandi_komutu:
                     self.ders_tamamlandi_komutu(self.aktif_ders)

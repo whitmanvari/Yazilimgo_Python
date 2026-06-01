@@ -1,9 +1,13 @@
 import tkinter as tk
+from bll.analytics_engine import AnalyticsEngine
 
 class ProfilEkrani(tk.Frame):
-    def __init__(self, parent, ana_menuye_don_komutu):
+    def __init__(self, parent, ana_menuye_don_komutu, kullanici_repo):
         super().__init__(parent, bg="#2b2b2b")
         self.ana_menuye_don_komutu = ana_menuye_don_komutu
+        self.repo=kullanici_repo
+        engine=AnalyticsEngine(self.repo)
+        engine.xp_liderlik_grafigi_ciz()
 
         self.ust_panel = tk.Frame(self, bg="#1e1e1e")
         self.ust_panel.pack(fill="x", pady=10, padx=20)
@@ -18,13 +22,13 @@ class ProfilEkrani(tk.Frame):
         self.bilgi_panel = tk.Frame(self, bg="#2b2b2b")
         self.bilgi_panel.pack(pady=10)
 
-        self.lbl_isim = tk.Label(self.bilgi_panel, text="Kullanıcı: ...", font=("Arial", 18, "bold"), bg="#2b2b2b", fg="#4CAF50")
+        self.lbl_isim = tk.Label(self.bilgi_panel, text="Kullanıcı: ...", font=("Arial", 18, "bold"), bg="#2b2b2b", fg="#ADBB32")
         self.lbl_isim.pack(side="left", padx=10)
 
         self.lbl_seviye = tk.Label(self.bilgi_panel, text="Seviye: 1", font=("Arial", 14), bg="#2b2b2b", fg="white")
         self.lbl_seviye.pack(side="left", padx=10)
 
-        self.lbl_xp = tk.Label(self.bilgi_panel, text="Toplam XP: 0", font=("Arial", 14), bg="#2b2b2b", fg="#FFD700")
+        self.lbl_xp = tk.Label(self.bilgi_panel, text="Toplam XP: 0", font=("Arial", 14), bg="#2b2b2b", fg="#00FF40")
         self.lbl_xp.pack(side="left", padx=10)
 
         # Matplotlib PNG Alanı
@@ -45,7 +49,7 @@ class ProfilEkrani(tk.Frame):
             try:
                 # Profil açıldığında Liderlik Tablosunu ekrana basar.
                 # subsample(2, 2) resmi Tkinter içine sığdırmak için boyutunu yarıya indirir.
-                self.guncel_resim = tk.PhotoImage(file="analiz_liderlik_tablosu.png").subsample(2, 2)
+                self.guncel_resim = tk.PhotoImage(file="analiz_liderlik_tablosu.png").subsample(2,2)
                 self.lbl_resim.config(image=self.guncel_resim)
             except Exception as e:
                 self.lbl_resim.config(text=f"Henüz yeterli veri yok veya grafik bulunamadı.\n(Kod: {str(e)})", fg="gray", font=("Arial", 12, "italic"))
