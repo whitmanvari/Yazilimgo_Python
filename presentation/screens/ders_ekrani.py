@@ -1,5 +1,7 @@
 import tkinter as tk
 from bll.code_runner import CodeRunner
+import threading
+#tkinter thread safe değil. Tkinter "single-threaded" çalışır.
 
 class DersEkrani(tk.Frame):
     def __init__(self, parent, ana_menuye_don_komutu,ders_tamamlandi_komutu):
@@ -46,26 +48,24 @@ class DersEkrani(tk.Frame):
         self.txt_cikti.config(state="disabled")
 
     def kodu_calistir(self):
-        yazilan_kod = self.txt_kod.get("1.0", tk.END)
-        
-        # BLL CodeRunner üzerinden kodu derlesin ve sonucu alsın diye yadım 
-        sonuc = self.code_runner.kod_calistir(yazilan_kod)
-        
-        # Terminal ekranına yazdıralım
+       
+        #threading thread--> target kısmına arka planda ne yapacağını söyledik
+        kod_thread = threading.Thread(target=self._arka_planda_calistir)
+        kod_thread.start()
+
+    def _arka_planda_calistir(self):
+        #fonksiyon main threadinin dışında çalışıyor bu sayede burası donarsa arayüz donmaz hale geliyor
+        kullanici_kodu = self.txt_kod.get("1.0", tk.END)
+        sonuc=self.code_runner.kod_calistir(kullanici_kodu)
+    #ms =0 diyoruz ki aftera, mainloopun bir sonraki iterasyonuna eklesin. İş ana thread kuyruğuna ekleniyor burada. 
+        self.after(0,self._ekrani_guncelle, sonuc)
+
+    def _ekrani_guncelle(self, sonuc):
+        #burası main threadinde çalışıyor. 
         self.txt_cikti.config(state="normal")
+        #1.satır o satırdaki 0. karakter (metin kutusunun en başına gitsin demek 1.0), tk.END ise sabit. metin kutusunun sonundaki gizli karakter (metin kutusunun sonuna git demek tk.END)
         self.txt_cikti.delete("1.0", tk.END)
-        self.txt_cikti.insert(tk.END, sonuc)
-        
-        if self.aktif_ders and self.aktif_ders.dogru_cevap:
-            beklenen_cevap = str(self.aktif_ders.dogru_cevap).strip().lower()
-            gercek_sonuc = sonuc.strip().lower()
-            
-            if beklenen_cevap == gercek_sonuc:
-                self.txt_cikti.insert(tk.END, "\nTEBRİKLER! ")
-                #eğer fonksiyon geçildiyse parametre olarak, main.py ye gitsin ve ders verisini göndersin istediğimden yazdım
-                if self.ders_tamamlandi_komutu:
-                    self.ders_tamamlandi_komutu(self.aktif_ders)
-            else:
-                self.txt_cikti.insert(tk.END, "\nÇıktı beklenen cevapla eşleşmiyor. Tekrar deneyin.")
-                
+        self.txt_cikti.insert("1.0", sonuc)
         self.txt_cikti.config(state="disabled")
+
+        self.btn_calistir.config(state="normal", text="Kodu Çalıştır...")
