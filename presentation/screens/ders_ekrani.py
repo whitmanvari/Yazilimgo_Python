@@ -1,5 +1,6 @@
 import tkinter as tk
 from bll.code_runner import CodeRunner
+from tkinter import ttk
 import threading
 #tkinter thread safe değil. Tkinter "single-threaded" çalışır.
 
@@ -29,6 +30,11 @@ class DersEkrani(tk.Frame):
         self.btn_calistir = tk.Button(self, text="Kodu Çalıştır! ", bg="#4CAF50", fg="white", font=("Arial", 10, "bold"), command=self.kodu_calistir)
         self.btn_calistir.pack(pady=10)
 
+        #progressbar
+        self.progress = ttk.Progressbar(self, mode='indeterminate', length=200)
+        self.progress.pack(pady=5)
+        self.progress.pack_forget() #başlangıçta görünmesin sonradan görünür kılalım
+
         #terminal alanı
         self.lbl_cikti_baslik = tk.Label(self, text="Terminal Çıktısı:", font=("Arial", 10, "bold"))
         self.lbl_cikti_baslik.pack(anchor="w", padx=20)
@@ -48,6 +54,9 @@ class DersEkrani(tk.Frame):
         self.txt_cikti.config(state="disabled")
 
     def kodu_calistir(self):
+        self.btn_calistir.config(state="disabled")
+        self.progress.pack() #görünür hale getirelim
+        self.progress.start(10)
        
         #threading thread--> target kısmına arka planda ne yapacağını söyledik
         kod_thread = threading.Thread(target=self._arka_planda_calistir)
@@ -61,6 +70,8 @@ class DersEkrani(tk.Frame):
         self.after(0,self._ekrani_guncelle, sonuc)
 
     def _ekrani_guncelle(self, sonuc):
+        self.progress.stop()
+        self.progress.pack_forget()
         #burası main threadinde çalışıyor. 
         self.txt_cikti.config(state="normal")
         #1.satır o satırdaki 0. karakter (metin kutusunun en başına gitsin demek 1.0), tk.END ise sabit. metin kutusunun sonundaki gizli karakter (metin kutusunun sonuna git demek tk.END)
