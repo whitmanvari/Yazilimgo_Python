@@ -36,6 +36,9 @@ class KazanimServisi:
             elif rozet.kosul_turu == "xp_esigi":
                 if kullanici.toplam_xp >= rozet.kosul_degeri:
                     kazandi_mi = True
+            elif rozet.kosul_turu == "ders_sayisi":
+                if len(kullanici.ilerlemeler) >= rozet.kosul_degeri:
+                    kazandi_mi = True
             
            
             if kazandi_mi:
