@@ -1,5 +1,3 @@
-#ilerleme durumu dataclassı
-
 from datetime import datetime
 from entities.base import Base
 from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Integer, String, UniqueConstraint

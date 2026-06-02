@@ -57,8 +57,11 @@ def seed_verileri_yukle():
         ders8 = Ders(modul_id=modul1.modul_id, ders_basligi="8. Ekrana Yazdırma", ders_turu="kod_yazma", 
                      soru_metni="Görev: Ekrana selam yazdırın! ", 
                      dogru_cevap="Selam", kazanilan_xp=10, sira_no=8)
+        ders9 = Ders(modul_id=modul1.modul_id, ders_basligi="9. Döngü Oluşturma", ders_turu="kod_yazma", 
+                     soru_metni="Görev: While True döngüsü oluşturun ve 3 defa '1' yazdırın.",
+                     dogru_cevap="1\n1\n1", kazanilan_xp=60, sira_no=9)
 
-        session.add_all([ders1, ders2, ders3, ders4, ders5, ders6, ders7,ders8])
+        session.add_all([ders1, ders2, ders3, ders4, ders5, ders6, ders7,ders8,ders9])
         session.commit()
 
     if session.query(KazanimTanimi).first() is None:
