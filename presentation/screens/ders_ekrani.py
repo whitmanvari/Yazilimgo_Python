@@ -6,55 +6,64 @@ import threading
 #tkinter thread safe değil. Tkinter "single-threaded" çalışır.
 
 class DersEkrani(tk.Frame):
-    def __init__(self, parent, ana_menuye_don_komutu,ders_tamamlandi_komutu):
-        super().__init__(parent)
+    def __init__(self, parent, ana_menuye_don_komutu, ders_tamamlandi_komutu):
+        super().__init__(parent, bg="#f0f0f0")
         
         self.code_runner = CodeRunner()
-        self.progress_frame= tk.Frame(self, bg="#f0f0f0")
-        self.progress_frame.pack(fill="x", pady=5)
+        self.ana_menuye_don_komutu = ana_menuye_don_komutu
+        self.ders_tamamlandi_komutu = ders_tamamlandi_komutu
+        self.aktif_ders = None
+
+        self.header_frame = tk.Frame(self, bg="#ffffff", pady=10)
+        self.header_frame.pack(fill="x", side="top")
+        
+        self.btn_geri = tk.Button(self.header_frame, text="⬅ Ana Menüye Dön", command=self.ana_menuye_don_komutu)
+        self.btn_geri.pack(side="left", padx=20)
+        self.lbl_soru = tk.Label(self.header_frame, 
+                         text="Görev: ...", 
+                         font=("DejaVu Sans", 12, "bold"), 
+                         bg="#ffffff", 
+                         wraplength=700,  
+                         justify="center")
+        self.lbl_soru.pack(side="left", padx=30,pady=15)
+        
+
+        self.content_frame = tk.Frame(self, bg="#f0f0f0")
+        self.content_frame.pack(fill="both", expand=True, padx=20, pady=10)
+
+        self.txt_kod = tk.Text(self.content_frame, height=10, font=("DejaVu Sans", 12), bg="#2b2b2b", fg="#ffffff", insertbackground="white")
+        self.txt_kod.pack(fill="x", pady=5)
+
+        self.lbl_cikti_baslik = tk.Label(self.content_frame, text="Terminal Çıktısı:", bg="#f0f0f0", font=("DejaVu Sans", 10, "bold"))
+        self.lbl_cikti_baslik.pack(anchor="w", pady=(10, 0))
+        
+        self.txt_cikti = tk.Text(self.content_frame, height=5, font=("DejaVu Sans", 11), bg="black", fg="#00FF00", state="disabled")
+        self.txt_cikti.pack(fill="x", pady=5)
+
+        self.footer_frame = tk.Frame(self, bg="#f0f0f0")
+        self.footer_frame.pack(fill="x", side="bottom", padx=20, pady=20)
+
+        self.progress_frame = tk.Frame(self.footer_frame, bg="#f0f0f0")
+        self.progress_frame.pack(fill="x")
 
         self.progress = ttk.Progressbar(self.progress_frame, mode="indeterminate", length=200)
-        self.ana_menuye_don_komutu = ana_menuye_don_komutu
-        self.aktif_ders = None # Hangi dersi çözdüğümüzü burada tutsun diye yazdım
-        self.ders_tamamlandi_komutu=ders_tamamlandi_komutu
-        style=ttk.Style()
-        style.theme_use('default')
-        style.configure("my.Horizontal.TProgressbar",
-                        thickness=10,
-                        troughcolor="#e0e0e0",
-                        background="#4CAF50")
-        
-        self.progress.configure(style="my.Horizontal.TProgressbar")
+        self.progress.pack(fill="x", pady=5)
+        self.progress.pack_forget() # Başta gizli
 
-        self.ust_panel = tk.Frame(self)
-        self.ust_panel.pack(fill="x", pady=10, padx=20)
-
-        self.btn_geri = tk.Button(self.ust_panel, text="⬅ Ana Menüye Dön", command=self.ana_menuye_don_komutu)
-        self.btn_geri.pack(side="left")
-
-        self.lbl_soru = tk.Label(self.ust_panel, text="Görev: ...", font=("DejaVu Sans", 12, "bold"))
-        self.lbl_soru.pack(side="left", padx=20)
-
-        # kodlama alanım
-        self.txt_kod = tk.Text(self, height=10, width=50, font=("DejaVu Sans", 12), bg="#2b2b2b", fg="#ffffff", insertbackground="white")
-        self.txt_kod.pack(pady=5, padx=20, fill="x")
-
-        self.lbl_status=tk.Label(self.progress_frame, text="Kod inceleniyor...", bg="#f0f0f0")
+        self.lbl_status = tk.Label(self.progress_frame, text="Kod inceleniyor...", bg="#f0f0f0")
         self.lbl_status.pack_forget()
 
-        # çalıştırma butonum
-        self.btn_calistir = tk.Button(self, text="Kodu Çalıştır! ", bg="#4CAF50", fg="white", font=("DejaVu Sans", 10, "bold"), command=self.kodu_calistir)
+        self.btn_calistir = tk.Button(self.footer_frame, text="Kodu Çalıştır!", bg="#4CAF50", fg="white", font=("DejaVu Sans", 10, "bold"), command=self.kodu_calistir)
         self.btn_calistir.pack(pady=10)
 
-        self.lbl_mesaj=tk.Label(self, text="", font=("DejaVu Sans", 10, "bold"),bg="#ffffff")
-        self.lbl_mesaj.pack(pady=5)
+        self.lbl_mesaj = tk.Label(self.footer_frame, text="", font=("DejaVu Sans", 10, "bold"), bg="#f0f0f0")
+        self.lbl_mesaj.pack()
 
-        #terminal alanı
-        self.lbl_cikti_baslik = tk.Label(self, text="Terminal Çıktısı:", font=("DejaVu Sans", 10, "bold"))
-        self.lbl_cikti_baslik.pack(anchor="w", padx=20)
-
-        self.txt_cikti = tk.Text(self, height=5, width=50, font=("DejaVu Sans", 11), bg="black", fg="#00FF00", state="disabled")
-        self.txt_cikti.pack(pady=5, padx=20, fill="x")
+        # ProgressBar Stili
+        style = ttk.Style()
+        style.theme_use('default')
+        style.configure("my.Horizontal.TProgressbar", thickness=10, background='#4CAF50', troughcolor="#e0e0e0")
+        self.progress.configure(style="my.Horizontal.TProgressbar")
 
     def aktif_dersi_ayarla(self, ders):
         """Main.py'den çağrılıp bu ekrana hangi dersin verisini işleyeceğini söyler."""
@@ -74,8 +83,6 @@ class DersEkrani(tk.Frame):
         self.lbl_status.pack()
         self.progress.pack(padx=20, fill="x") #görünür hale getirelim
         self.progress.start(10)
-        
-        
        
         #threading thread--> target kısmına arka planda ne yapacağını söyledik
         kod_thread = threading.Thread(target=self._arka_planda_calistir)

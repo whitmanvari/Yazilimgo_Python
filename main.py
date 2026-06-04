@@ -31,7 +31,8 @@ def main():
 
     root = tk.Tk()
     root.title("YazılımGo - Öğrenci Eğitim Platformu")
-    root.geometry("800x500")
+    root.geometry("900x600")
+    root.minsize(800,500)
 
     def sayfaya_git(hedef_ekran_adi, secilen_ders=None):
         giris_ekrani.pack_forget() 
