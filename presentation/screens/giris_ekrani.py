@@ -6,70 +6,68 @@ class GirisEkrani(tk.Frame):
         
         self.giris_komutu = giris_komutu
         self.kayit_komutu = kayit_komutu
-        self.mod_kayit_mi = False # Başlangıçta giriş modunda başlar
+        self.mod_kayit_mi = False
 
-        self.orta_panel = tk.Frame(self, bg="#2b2b2b")
-        self.orta_panel.place(relx=0.5, rely=0.5, anchor="center")
+        #ana panel
+        self.main_container = tk.Frame(self, bg="#2b2b2b")
+        self.main_container.place(relx=0.5, rely=0.5, anchor="center")
 
-        self.lbl_baslik = tk.Label(self.orta_panel, text="YazılımGo'ya Giriş Yap", font=("Arial", 18, "bold"), bg="#2b2b2b", fg="#4CAF50")
-        self.lbl_baslik.pack(pady=(0, 20))
+        #header
+        self.header_frame = tk.Frame(self.main_container, bg="#2b2b2b")
+        self.header_frame.pack(pady=(0, 20))
+        self.lbl_baslik = tk.Label(self.header_frame, text="YazılımGo'ya Giriş Yap", font=("DejaVu Sans", 18, "bold"), bg="#2b2b2b", fg="#4CAF50")
+        self.lbl_baslik.pack()
 
-        # Kullanıcı Adı
-        self.lbl_kullanici = tk.Label(self.orta_panel, text="Kullanıcı Adı:", font=("Arial", 12), bg="#2b2b2b", fg="white")
-        self.lbl_kullanici.pack(anchor="w")
-        self.txt_kullanici = tk.Entry(self.orta_panel, font=("Arial", 14), width=25)
-        self.txt_kullanici.pack(pady=(0, 10))
+        #girdi alanı
+        self.input_frame = tk.Frame(self.main_container, bg="#2b2b2b")
+        self.input_frame.pack(pady=10)
 
-        # E-posta (Sadece Kayıt modunda görünür, başlangıçta gizli)
-        self.lbl_email = tk.Label(self.orta_panel, text="E-posta Adresi:", font=("Arial", 12), bg="#2b2b2b", fg="white")
-        self.txt_email = tk.Entry(self.orta_panel, font=("Arial", 14), width=25)
+        #girdi elemanları 
+        self.txt_kullanici = self._create_input("Kullanıcı Adı:")
+        self.txt_email = self._create_input("E-posta Adresi:", visible=False)
+        self.txt_sifre = self._create_input("Şifre:", is_password=True)
+
+        #footer
+        self.footer_frame = tk.Frame(self.main_container, bg="#2b2b2b")
+        self.footer_frame.pack(pady=20)
         
-        # Şifre
-        self.lbl_sifre = tk.Label(self.orta_panel, text="Şifre:", font=("Arial", 12), bg="#2b2b2b", fg="white")
-        self.lbl_sifre.pack(anchor="w")
-        self.txt_sifre = tk.Entry(self.orta_panel, font=("Arial", 14), width=25, show="*") # Yıldızlı gösterim
-        self.txt_sifre.pack(pady=(0, 15))
-
-        self.lbl_hata = tk.Label(self.orta_panel, text="", font=("Arial", 10, "bold"), bg="#2b2b2b", fg="#ff4c4c")
+        self.lbl_hata = tk.Label(self.footer_frame, text="", font=("DejaVu Sans", 10, "bold"), bg="#2b2b2b", fg="#ff4c4c")
         self.lbl_hata.pack(pady=(0, 10))
 
-        self.btn_ana = tk.Button(self.orta_panel, text="Giriş Yap", font=("Arial", 12, "bold"), bg="#4CAF50", fg="white", width=20, command=self.islem_tetikle)
+        self.btn_ana = tk.Button(self.footer_frame, text="Giriş Yap", font=("DejaVu Sans", 12, "bold"), bg="#4CAF50", fg="white", width=20, command=self.islem_tetikle)
         self.btn_ana.pack(pady=5)
 
-        # Mod Değiştirme Linki (Giriş <-> Kayıt)
-        self.btn_mod_degistir = tk.Button(self.orta_panel, text="Hesabın yok mu? Kayıt Ol", font=("Arial", 10, "underline"), bg="#2b2b2b", fg="#2196F3", bd=0, activebackground="#2b2b2b", cursor="hand2", command=self.mod_degistir)
+        self.btn_mod_degistir = tk.Button(self.footer_frame, text="Hesabın yok mu? Kayıt Ol", font=("DejaVu Sans", 10, "underline"), bg="#2b2b2b", fg="#2196F3", bd=0, cursor="hand2", command=self.mod_degistir)
         self.btn_mod_degistir.pack(pady=10)
 
+    def _create_input(self, label_text, is_password=False, visible=True):
+        """Yardımcı fonksiyon: Tekrarı önlemek için giriş alanlarını tek hamlede oluşturur."""
+        frame = tk.Frame(self.input_frame, bg="#2b2b2b")
+        if visible: frame.pack(fill="x", pady=5)
+        else: frame.pack_forget()
+        
+        tk.Label(frame, text=label_text, font=("DejaVu Sans", 12), bg="#2b2b2b", fg="white").pack(anchor="w")
+        entry = tk.Entry(frame, font=("DejaVu Sans", 14), width=25, show="*" if is_password else "")
+        entry.pack(fill="x")
+        # Bu frame'i geri çağırmak için saklayalım (mod değiştirirken kolayca gizleriz)
+        frame.label_text = label_text 
+        entry.container = frame 
+        return entry
+
     def mod_degistir(self):
-        """Kayıt ve Giriş modları arasında ekranı günceller."""
         self.mod_kayit_mi = not self.mod_kayit_mi
-        self.lbl_hata.config(text="") 
+        self.lbl_hata.config(text="")
         
         if self.mod_kayit_mi:
             self.lbl_baslik.config(text="YazılımGo'ya Kayıt Ol")
             self.btn_ana.config(text="Kayıt Ol")
             self.btn_mod_degistir.config(text="Zaten hesabın var mı? Giriş Yap")
-            
-            # E-posta alanını araya sıkıştırmak için diğerlerini geçici olarak gizleyip yeniden diziyoruz
-            self.lbl_sifre.pack_forget()
-            self.txt_sifre.pack_forget()
-            self.lbl_hata.pack_forget()
-            self.btn_ana.pack_forget()
-            self.btn_mod_degistir.pack_forget()
-            
-            self.lbl_email.pack(anchor="w")
-            self.txt_email.pack(pady=(0, 10))
-            self.lbl_sifre.pack(anchor="w")
-            self.txt_sifre.pack(pady=(0, 15))
-            self.lbl_hata.pack(pady=(0, 10))
-            self.btn_ana.pack(pady=5)
-            self.btn_mod_degistir.pack(pady=10)
+            self.txt_email.container.pack(fill="x", pady=5, before=self.txt_sifre.container)
         else:
             self.lbl_baslik.config(text="YazılımGo'ya Giriş Yap")
             self.btn_ana.config(text="Giriş Yap")
             self.btn_mod_degistir.config(text="Hesabın yok mu? Kayıt Ol")
-            self.lbl_email.pack_forget()
-            self.txt_email.pack_forget()
+            self.txt_email.container.pack_forget()
 
     def islem_tetikle(self):
         kadi = self.txt_kullanici.get().strip()

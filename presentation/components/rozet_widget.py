@@ -4,7 +4,7 @@ class RozetWidget(tk.Frame):
     def __init__(self,pencere):
         super().__init__(pencere)
 
-        self.baslik= tk.Label(self, text="Kazanılan Rozetler", font=("Arial", 12, "bold"))
+        self.baslik= tk.Label(self, text="Kazanılan Rozetler", font=("DejaVu Sans", 12, "bold"))
         self.baslik.pack(anchor="w", pady=(0,5))
 
         self.rozet_alani=tk.Frame(self)
@@ -15,14 +15,14 @@ class RozetWidget(tk.Frame):
         for widget in self.rozet_alani.winfo_children():
             widget.destroy()
         if not rozet_listesi:
-            bilgi=tk.Label(self.rozet_alani, text="Henüz hiç rozet kazanılmadı..", fg="gray", font=("Arial", 10, "italic"))
+            bilgi=tk.Label(self.rozet_alani, text="Henüz hiç rozet kazanılmadı..", fg="gray", font=("DejaVu Sans", 10, "italic"))
             bilgi.pack(anchor="w")
             return
         for rozet_adi in rozet_listesi:
             rozet_etiketi = tk.Label(self.rozet_alani,
                                      text=f"{rozet_adi}",
                                      bg="#A6FF00", fg="black",
-                                     font=("Arial", 10, "bold"),
+                                     font=("DejaVu Sans", 10, "bold"),
                                      padx=5, pady=2)
             rozet_etiketi.pack(side="left", padx=5)
             

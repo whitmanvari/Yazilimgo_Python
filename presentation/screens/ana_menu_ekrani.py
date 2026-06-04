@@ -19,10 +19,10 @@ class AnaMenuEkrani(tk.Frame):
         self.ust_panel = tk.Frame(self)
         self.ust_panel.pack(fill="x", pady=10, padx=20)
 
-        self.lbl_hosgeldin = tk.Label(self.ust_panel, text="Hoş Geldin!", font=("Arial", 16, "bold"))
+        self.lbl_hosgeldin = tk.Label(self.ust_panel, text="Hoş Geldin!", font=("DejaVu Sans", 16, "bold"))
         self.lbl_hosgeldin.pack(side="left")
 
-        self.btn_profil = tk.Button(self.ust_panel, text="👤 Profilim", font=("Arial", 10, "bold"), bg="#2196F3", fg="white", command=self.profile_git_komutu)
+        self.btn_profil = tk.Button(self.ust_panel, text="👤 Profilim", font=("DejaVu Sans", 10, "bold"), bg="#2196F3", fg="white", command=self.profile_git_komutu)
         self.btn_profil.pack(side="right")
 
         self.ana_govde = tk.Frame(self)
@@ -43,7 +43,7 @@ class AnaMenuEkrani(tk.Frame):
         self.btn_tum_rozetler = tk.Button(
             self.sol_panel, 
             text="Tümünü Gör ➔", 
-            font=("Arial", 9, "bold"), 
+            font=("DejaVu Sans", 9, "bold"), 
             fg="#4CAF50",
             bg="#2b2b2b", 
             bd=0, 
@@ -54,7 +54,7 @@ class AnaMenuEkrani(tk.Frame):
         )
         self.btn_tum_rozetler.pack(pady=(0, 20), anchor="e", padx=15)
 
-        self.lbl_dersler=tk.Label(self.sag_panel, text="Mevcut Dersler", font=("Arial", 12, "bold"), bg="#ffffff")
+        self.lbl_dersler=tk.Label(self.sag_panel, text="Mevcut Dersler", font=("DejaVu Sans", 12, "bold"), bg="#ffffff")
         self.lbl_dersler.pack(pady=20, padx=10, anchor="w")
 
         self.canvas = tk.Canvas(self.sag_panel, bg="#ffffff", highlightthickness=0)
