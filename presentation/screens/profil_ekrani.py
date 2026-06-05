@@ -1,55 +1,109 @@
-import tkinter as tk
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QPixmap
 from bll.analytics_engine import AnalyticsEngine
 
-class ProfilEkrani(tk.Frame):
-    def __init__(self, parent, ana_menuye_don_komutu, kullanici_repo):
-        super().__init__(parent, bg="#2b2b2b")
+class ProfilEkrani(QWidget):
+    def __init__(self, parent=None, ana_menuye_don_komutu=None, kullanici_repo=None):
+        super().__init__(parent)
         self.ana_menuye_don_komutu = ana_menuye_don_komutu
-        self.repo=kullanici_repo
-        engine=AnalyticsEngine(self.repo)
-        engine.xp_liderlik_grafigi_ciz()
-
-        self.ust_panel = tk.Frame(self, bg="#1e1e1e")
-        self.ust_panel.pack(fill="x", pady=10, padx=20)
-
-        self.btn_geri = tk.Button(self.ust_panel, text="⬅ Ana Menüye Dön", command=self.ana_menuye_don_komutu, bg="#4CAF50", fg="white", font=("Arial", 10, "bold"))
-        self.btn_geri.pack(side="left")
-
-        self.lbl_baslik = tk.Label(self.ust_panel, text="Öğrenci Profili ve İstatistikler", font=("Arial", 14, "bold"), bg="#1e1e1e", fg="white")
-        self.lbl_baslik.pack(side="left", padx=20)
-
-        # Bilgi
-        self.bilgi_panel = tk.Frame(self, bg="#2b2b2b")
-        self.bilgi_panel.pack(pady=10)
-
-        self.lbl_isim = tk.Label(self.bilgi_panel, text="Kullanıcı: ...", font=("Arial", 18, "bold"), bg="#2b2b2b", fg="#ADBB32")
-        self.lbl_isim.pack(side="left", padx=10)
-
-        self.lbl_seviye = tk.Label(self.bilgi_panel, text="Seviye: 1", font=("Arial", 14), bg="#2b2b2b", fg="white")
-        self.lbl_seviye.pack(side="left", padx=10)
-
-        self.lbl_xp = tk.Label(self.bilgi_panel, text="Toplam XP: 0", font=("Arial", 14), bg="#2b2b2b", fg="#00FF40")
-        self.lbl_xp.pack(side="left", padx=10)
-
-        # Matplotlib PNG Alanı
-        self.grafik_panel = tk.Frame(self, bg="#ffffff", bd=2, relief="ridge")
-        self.grafik_panel.pack(pady=10, padx=20, fill="both", expand=True)
+        self.repo = kullanici_repo
         
-        self.lbl_resim = tk.Label(self.grafik_panel, bg="#ffffff")
-        self.lbl_resim.pack(expand=True)
+        self.init_ui()
+
+    def init_ui(self):
+        # Ana Arka Plan
+        self.setStyleSheet("QWidget { background-color: #2b2b2b; }")
         
-        self.guncel_resim = None # Resmi RAM'de (Çöp toplayıcıdan) korumak için saklıyoruz
+        ana_layout = QVBoxLayout(self)
+        ana_layout.setContentsMargins(0, 0, 0, 0)
+        ana_layout.setSpacing(0)
+
+        self.header_frame = QWidget()
+        self.header_frame.setStyleSheet("background-color: #1e1e1e;")
+        self.header_frame.setFixedHeight(60)
+        
+        header_layout = QHBoxLayout(self.header_frame)
+        header_layout.setContentsMargins(15, 0, 20, 0)
+
+        self.btn_geri = QPushButton("⬅ Ana Menüye Dön")
+        self.btn_geri.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_geri.setStyleSheet("""
+            QPushButton {
+                background-color: #FAA2A2;
+                color: white;
+                font-family: 'DejaVu Sans';
+                font-weight: bold;
+                font-size: 14px;
+                border: none;
+                padding: 8px 15px;
+                border-radius: 5px;
+            }
+            QPushButton:hover { background-color: #790909; }
+        """)
+        if self.ana_menuye_don_komutu:
+            self.btn_geri.clicked.connect(self.ana_menuye_don_komutu)
+        header_layout.addWidget(self.btn_geri)
+
+        self.lbl_baslik = QLabel("Öğrenci Profili")
+        self.lbl_baslik.setStyleSheet("font-family: cursive; font-size: 20px; font-weight: bold; color: white;")
+        header_layout.addWidget(self.lbl_baslik)
+        
+        header_layout.addStretch()
+        ana_layout.addWidget(self.header_frame)
+
+        icerik_widget = QWidget()
+        icerik_layout = QVBoxLayout(icerik_widget)
+        icerik_layout.setContentsMargins(20, 20, 20, 20)
+        icerik_layout.setSpacing(20)
+
+        self.info_frame = QWidget()
+        self.info_frame.setStyleSheet("background-color: #1e1e1e; border-radius: 10px;")
+        info_layout = QHBoxLayout(self.info_frame)
+        info_layout.setContentsMargins(20, 15, 20, 15)
+
+        self.lbl_isim = QLabel("Öğrenci: ...")
+        self.lbl_isim.setStyleSheet("font-size: 18px; font-weight: bold; color: #FAA2A2;")
+        info_layout.addWidget(self.lbl_isim)
+
+        self.lbl_seviye = QLabel("🏆 Seviye: 1")
+        self.lbl_seviye.setStyleSheet("font-size: 16px; color: white; margin-left: 15px;")
+        info_layout.addWidget(self.lbl_seviye)
+
+        self.lbl_xp = QLabel("⚡ Toplam XP: 0")
+        self.lbl_xp.setStyleSheet("font-size: 16px; color: #FAA2A2; margin-left: 15px;")
+        info_layout.addWidget(self.lbl_xp)
+        
+        info_layout.addStretch()
+        icerik_layout.addWidget(self.info_frame)
+
+        self.grafik_frame = QWidget()
+        self.grafik_frame.setStyleSheet("background-color: #ffffff; border-radius: 10px;")
+        grafik_layout = QVBoxLayout(self.grafik_frame)
+
+        self.lbl_resim = QLabel("Grafik Yükleniyor...")
+        self.lbl_resim.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.lbl_resim.setStyleSheet("color: gray; font-size: 14px; font-style: italic;")
+        grafik_layout.addWidget(self.lbl_resim)
+
+        icerik_layout.addWidget(self.grafik_frame, stretch=1)
+        ana_layout.addWidget(icerik_widget)
 
     def verileri_yukle(self, kullanici):
         if kullanici:
-            self.lbl_isim.config(text=f"Öğrenci: {kullanici.kullanici_adi}")
-            self.lbl_seviye.config(text=f"🏆 Seviye: {kullanici.seviye}")
-            self.lbl_xp.config(text=f"⚡ Toplam XP: {kullanici.toplam_xp}")
+            engine = AnalyticsEngine(self.repo)
+            engine.xp_liderlik_grafigi_ciz()
+            
+            self.lbl_isim.setText(f"Öğrenci: {kullanici.kullanici_adi}")
+            self.lbl_seviye.setText(f"🏆 Seviye: {kullanici.seviye}")
+            self.lbl_xp.setText(f"⚡ Toplam XP: {kullanici.toplam_xp}")
             
             try:
-                # Profil açıldığında Liderlik Tablosunu ekrana basar.
-                # subsample(2, 2) resmi Tkinter içine sığdırmak için boyutunu yarıya indirir.
-                self.guncel_resim = tk.PhotoImage(file="analiz_liderlik_tablosu.png").subsample(2,2)
-                self.lbl_resim.config(image=self.guncel_resim)
+                pixmap = QPixmap("analiz_liderlik_tablosu.png")
+                if not pixmap.isNull():
+                    scaled_pixmap = pixmap.scaled(800, 500, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+                    self.lbl_resim.setPixmap(scaled_pixmap)
+                else:
+                    self.lbl_resim.setText("Grafik oluşturuldu ama okunamadı.")
             except Exception as e:
-                self.lbl_resim.config(text=f"Henüz yeterli veri yok veya grafik bulunamadı.\n(Kod: {str(e)})", fg="gray", font=("Arial", 12, "italic"))
+                self.lbl_resim.setText(f"Henüz yeterli veri yok veya grafik bulunamadı.\n(Kod: {str(e)})")

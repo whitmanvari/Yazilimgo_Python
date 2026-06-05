@@ -17,7 +17,7 @@ class AnalyticsEngine:
         # Grafik boyutu (10 genişlik, 6 yükseklik)
         plt.figure(figsize=(10,6))
         
-        plt.bar(isimler, xpler, color='#4CAF50')
+        plt.bar(isimler, xpler, color="#630D01")
         
         # Etiketler
         plt.title("YazılımGo - Liderlik Tablosu")
@@ -39,7 +39,7 @@ class AnalyticsEngine:
         benzersiz_seviyeler, frekanslar= np.unique(seviyeler, return_counts=True)
 
         plt.figure(figsize=(8,8))
-        renkler = ['#ff9999', '#66b3ff', '#99ff99','#ffcc99', '#c2c2f0']
+        renkler = ['#ff9999', '#66b3ff', "#ffb17d",'#ffcc99', "#f7ec5c"]
 
         plt.pie(frekanslar, labels=[f"Seviye {s}" for s in benzersiz_seviyeler],
                 autopct='%1.1f%%', startangle=140, colors=renkler, shadow=True)

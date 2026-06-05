@@ -1,93 +1,152 @@
-import tkinter as tk
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton
+from PyQt6.QtCore import Qt
 
-class GirisEkrani(tk.Frame):
-    def __init__(self, parent, giris_komutu, kayit_komutu):
-        super().__init__(parent, bg="#2b2b2b")
-        
+class GirisEkrani(QWidget):
+    def __init__(self, parent=None, giris_komutu=None, kayit_komutu=None):
+        super().__init__(parent)
         self.giris_komutu = giris_komutu
         self.kayit_komutu = kayit_komutu
-        self.mod_kayit_mi = False # Başlangıçta giriş modunda başlar
+        self.mod_kayit_mi = False
 
-        self.orta_panel = tk.Frame(self, bg="#2b2b2b")
-        self.orta_panel.place(relx=0.5, rely=0.5, anchor="center")
+        self.init_ui()
 
-        self.lbl_baslik = tk.Label(self.orta_panel, text="YazılımGo'ya Giriş Yap", font=("Arial", 18, "bold"), bg="#2b2b2b", fg="#4CAF50")
-        self.lbl_baslik.pack(pady=(0, 20))
+    def init_ui(self):
+        main_layout = QVBoxLayout(self)
+        main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter) 
 
-        # Kullanıcı Adı
-        self.lbl_kullanici = tk.Label(self.orta_panel, text="Kullanıcı Adı:", font=("Arial", 12), bg="#2b2b2b", fg="white")
-        self.lbl_kullanici.pack(anchor="w")
-        self.txt_kullanici = tk.Entry(self.orta_panel, font=("Arial", 14), width=25)
-        self.txt_kullanici.pack(pady=(0, 10))
+        self.form_container = QWidget()
+        self.form_container.setFixedWidth(400)
+        form_layout = QVBoxLayout(self.form_container)
+        form_layout.setSpacing(15) # Elemanlar arası boşluk
 
-        # E-posta (Sadece Kayıt modunda görünür, başlangıçta gizli)
-        self.lbl_email = tk.Label(self.orta_panel, text="E-posta Adresi:", font=("Arial", 12), bg="#2b2b2b", fg="white")
-        self.txt_email = tk.Entry(self.orta_panel, font=("Arial", 14), width=25)
-        
-        # Şifre
-        self.lbl_sifre = tk.Label(self.orta_panel, text="Şifre:", font=("Arial", 12), bg="#2b2b2b", fg="white")
-        self.lbl_sifre.pack(anchor="w")
-        self.txt_sifre = tk.Entry(self.orta_panel, font=("Arial", 14), width=25, show="*") # Yıldızlı gösterim
-        self.txt_sifre.pack(pady=(0, 15))
+        # Başlık
+        self.lbl_baslik = QLabel("YazılımGo'ya Giriş Yap")
+        self.lbl_baslik.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.lbl_baslik.setStyleSheet("font-size: 28px; font-weight: bold; color: #FFFFFF; font-family: cursive; margin-bottom: 20px;")
+        form_layout.addWidget(self.lbl_baslik)
 
-        self.lbl_hata = tk.Label(self.orta_panel, text="", font=("Arial", 10, "bold"), bg="#2b2b2b", fg="#ff4c4c")
-        self.lbl_hata.pack(pady=(0, 10))
+        # Girdi Alanları
+        self.txt_kullanici = self._create_input(form_layout, "Kullanıcı Adı:")
 
-        self.btn_ana = tk.Button(self.orta_panel, text="Giriş Yap", font=("Arial", 12, "bold"), bg="#4CAF50", fg="white", width=20, command=self.islem_tetikle)
-        self.btn_ana.pack(pady=5)
+        # Email alanını oluşturup başlangıçta gizliyorum
+        self.lbl_email, self.txt_email = self._create_input_pair("E-posta Adresi:")
+        form_layout.addWidget(self.lbl_email)
+        form_layout.addWidget(self.txt_email)
+        self.lbl_email.hide()
+        self.txt_email.hide()
 
-        # Mod Değiştirme Linki (Giriş <-> Kayıt)
-        self.btn_mod_degistir = tk.Button(self.orta_panel, text="Hesabın yok mu? Kayıt Ol", font=("Arial", 10, "underline"), bg="#2b2b2b", fg="#2196F3", bd=0, activebackground="#2b2b2b", cursor="hand2", command=self.mod_degistir)
-        self.btn_mod_degistir.pack(pady=10)
+        self.txt_sifre = self._create_input(form_layout, "Şifre:", is_password=True)
+
+        self.lbl_hata = QLabel("")
+        self.lbl_hata.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.lbl_hata.setStyleSheet("color: #ff4c4c; font-size: 14px; font-weight: bold;")
+        form_layout.addWidget(self.lbl_hata)
+
+        self.btn_ana = QPushButton("Giriş Yap")
+        self.btn_ana.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_ana.setStyleSheet("""
+            QPushButton {
+                background-color: #570B0B;
+                color: white;
+                font-size: 16px;
+                font-weight: bold;
+                padding: 12px;
+                border-radius: 8px; /* Oval köşeler */
+            }
+            QPushButton:hover {
+                background-color: #790909; /* Üzerine gelince parlar */
+            }
+        """)
+        self.btn_ana.clicked.connect(self.islem_tetikle)
+        form_layout.addWidget(self.btn_ana)
+
+        self.btn_mod_degistir = QPushButton("Hesabın yok mu? Kayıt Ol")
+        self.btn_mod_degistir.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_mod_degistir.setStyleSheet("""
+            QPushButton {
+                background-color: transparent;
+                color: #F4F6F8;
+                font-size: 14px;
+                text-decoration: underline;
+                border: none;
+                margin-top: 10px;
+            }
+            QPushButton:hover {
+                color: #FFFFFF;
+            }
+        """)
+        self.btn_mod_degistir.clicked.connect(self.mod_degistir)
+        form_layout.addWidget(self.btn_mod_degistir)
+
+        main_layout.addWidget(self.form_container)
+
+        self.setStyleSheet("QWidget { background-color: #2b2b2b; }")
+
+    def _create_input(self, layout, label_text, is_password=False):
+        lbl, entry = self._create_input_pair(label_text, is_password)
+        layout.addWidget(lbl)
+        layout.addWidget(entry)
+        return entry
+
+    def _create_input_pair(self, label_text, is_password=False):
+        lbl = QLabel(label_text)
+        lbl.setStyleSheet("color: white; font-size: 16px; font-family: cursive;")
+
+        entry = QLineEdit()
+        entry.setStyleSheet("""
+            QLineEdit {
+                font-size: 14px;
+                padding: 10px;
+                border: 2px solid #555555;
+                border-radius: 6px;
+                background-color: #1e1e1e;
+                color: white;
+            }
+            QLineEdit:focus {
+                border: 2px solid #570B0B;
+            }
+        """)
+        if is_password:
+            entry.setEchoMode(QLineEdit.EchoMode.Password)
+        return lbl, entry
 
     def mod_degistir(self):
-        """Kayıt ve Giriş modları arasında ekranı günceller."""
         self.mod_kayit_mi = not self.mod_kayit_mi
-        self.lbl_hata.config(text="") 
-        
+        self.lbl_hata.setText("")
+
         if self.mod_kayit_mi:
-            self.lbl_baslik.config(text="YazılımGo'ya Kayıt Ol")
-            self.btn_ana.config(text="Kayıt Ol")
-            self.btn_mod_degistir.config(text="Zaten hesabın var mı? Giriş Yap")
-            
-            # E-posta alanını araya sıkıştırmak için diğerlerini geçici olarak gizleyip yeniden diziyoruz
-            self.lbl_sifre.pack_forget()
-            self.txt_sifre.pack_forget()
-            self.lbl_hata.pack_forget()
-            self.btn_ana.pack_forget()
-            self.btn_mod_degistir.pack_forget()
-            
-            self.lbl_email.pack(anchor="w")
-            self.txt_email.pack(pady=(0, 10))
-            self.lbl_sifre.pack(anchor="w")
-            self.txt_sifre.pack(pady=(0, 15))
-            self.lbl_hata.pack(pady=(0, 10))
-            self.btn_ana.pack(pady=5)
-            self.btn_mod_degistir.pack(pady=10)
+            self.lbl_baslik.setText("YazılımGo'ya Kayıt Ol")
+            self.btn_ana.setText("Kayıt Ol")
+            self.btn_mod_degistir.setText("Zaten hesabın var mı? Giriş Yap")
+            self.lbl_email.show()
+            self.txt_email.show()
         else:
-            self.lbl_baslik.config(text="YazılımGo'ya Giriş Yap")
-            self.btn_ana.config(text="Giriş Yap")
-            self.btn_mod_degistir.config(text="Hesabın yok mu? Kayıt Ol")
-            self.lbl_email.pack_forget()
-            self.txt_email.pack_forget()
+            self.lbl_baslik.setText("YazılımGo'ya Giriş Yap")
+            self.btn_ana.setText("Giriş Yap")
+            self.btn_mod_degistir.setText("Hesabın yok mu? Kayıt Ol")
+            self.lbl_email.hide()
+            self.txt_email.hide()
 
     def islem_tetikle(self):
-        kadi = self.txt_kullanici.get().strip()
-        sifre = self.txt_sifre.get().strip()
-        
+        kadi = self.txt_kullanici.text().strip()
+        sifre = self.txt_sifre.text().strip()
+
         if not kadi or not sifre:
             self.hata_goster("Lütfen tüm alanları doldurun!")
             return
-            
+
         if self.mod_kayit_mi:
-            email = self.txt_email.get().strip()
+            email = self.txt_email.text().strip()
             if not email:
                 self.hata_goster("Lütfen e-posta adresini girin!")
                 return
-            self.kayit_komutu(kadi, email, sifre)
+            if self.kayit_komutu:
+                self.kayit_komutu(kadi, email, sifre)
         else:
-            self.giris_komutu(kadi, sifre)
+            if self.giris_komutu:
+                self.giris_komutu(kadi, sifre)
 
     def hata_goster(self, mesaj, basarili_mi=False):
-        renk = "#4CAF50" if basarili_mi else "#ff4c4c"
-        self.lbl_hata.config(text=mesaj, fg=renk)
+        renk = "#EFF7EF" if basarili_mi else "#ff4c4c"
+        self.lbl_hata.setStyleSheet(f"color: {renk}; font-size: 14px; font-weight: bold;")
+        self.lbl_hata.setText(mesaj)
