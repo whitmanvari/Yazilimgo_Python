@@ -34,10 +34,10 @@ class DersEkrani(tk.Frame):
         self.txt_kod = tk.Text(self.content_frame, height=10, font=("DejaVu Sans", 12), bg="#2b2b2b", fg="#ffffff", insertbackground="white")
         self.txt_kod.pack(fill="x", pady=5)
 
-        self.lbl_cikti_baslik = tk.Label(self.content_frame, text="Terminal Çıktısı:", bg="#f0f0f0", font=("DejaVu Sans", 10, "bold"))
+        self.lbl_cikti_baslik = tk.Label(self.content_frame, text="Terminal Çıktısı:", bg="#f0f0f0", font=("DejaVu Sans", 14, "bold"))
         self.lbl_cikti_baslik.pack(anchor="w", pady=(10, 0))
         
-        self.txt_cikti = tk.Text(self.content_frame, height=5, font=("DejaVu Sans", 11), bg="black", fg="#00FF00", state="disabled")
+        self.txt_cikti = tk.Text(self.content_frame, height=5, font=("DejaVu Sans", 11), bg="black", fg="#FAA2A2", state="disabled")
         self.txt_cikti.pack(fill="x", pady=5)
 
         self.footer_frame = tk.Frame(self, bg="#f0f0f0")
@@ -53,16 +53,16 @@ class DersEkrani(tk.Frame):
         self.lbl_status = tk.Label(self.progress_frame, text="Kod inceleniyor...", bg="#f0f0f0")
         self.lbl_status.pack_forget()
 
-        self.btn_calistir = tk.Button(self.footer_frame, text="Kodu Çalıştır!", bg="#4CAF50", fg="white", font=("DejaVu Sans", 10, "bold"), command=self.kodu_calistir)
+        self.btn_calistir = tk.Button(self.footer_frame, text="Kodu Çalıştır!", bg="#FAA2A2", fg="white", font=("DejaVu Sans", 10, "bold"), command=self.kodu_calistir)
         self.btn_calistir.pack(pady=10)
 
-        self.lbl_mesaj = tk.Label(self.footer_frame, text="", font=("DejaVu Sans", 10, "bold"), bg="#f0f0f0")
+        self.lbl_mesaj = tk.Label(self.footer_frame, text="", font=("DejaVu Sans", 14, "bold"), bg="#f0f0f0")
         self.lbl_mesaj.pack()
 
         # ProgressBar Stili
         style = ttk.Style()
         style.theme_use('default')
-        style.configure("my.Horizontal.TProgressbar", thickness=10, background='#4CAF50', troughcolor="#e0e0e0")
+        style.configure("my.Horizontal.TProgressbar", thickness=10, background='#FAA2A2', troughcolor="#e0e0e0")
         self.progress.configure(style="my.Horizontal.TProgressbar")
 
     def aktif_dersi_ayarla(self, ders):
@@ -111,7 +111,7 @@ class DersEkrani(tk.Frame):
         self.lbl_status.pack_forget()
         self.btn_calistir.config(state="normal", text="Kodu Çalıştır...")
         if sonuc.strip() == self.aktif_ders.dogru_cevap.strip():
-            self.lbl_mesaj.config(text="Tebrikler! Doğru cevap. ", fg="green")
+            self.lbl_mesaj.config(text="Tebrikler! Doğru cevap. ", fg="#FDB9B9")
             self.ders_tamamlandi_komutu(self.aktif_ders)
         else:
             self.lbl_mesaj.config(text="Tekrar dene, cevap yanlış..", fg="red")

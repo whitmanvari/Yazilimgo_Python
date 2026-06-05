@@ -6,7 +6,7 @@ from presentation.components.ders_karti import DersKarti
 
 class AnaMenuEkrani(tk.Frame):
     def __init__(self, parent,kullanici_servisi, ders_servisi, sayfa_gecis_komutu, profile_git_komutu, kazanimlara_git_komutu):
-        super().__init__(parent)
+        super().__init__(parent, bg="#000000")
 
         self.kullanici_servisi=kullanici_servisi
         self.ders_servisi=ders_servisi
@@ -16,16 +16,16 @@ class AnaMenuEkrani(tk.Frame):
 
         self.aktif_kullanici_id= None
 
-        self.ust_panel = tk.Frame(self)
+        self.ust_panel = tk.Frame(self,bg="#000000")
         self.ust_panel.pack(fill="x", pady=10, padx=20)
 
-        self.lbl_hosgeldin = tk.Label(self.ust_panel, text="Hoş Geldin!", font=("DejaVu Sans", 16, "bold"))
+        self.lbl_hosgeldin = tk.Label(self.ust_panel, text="Hoş Geldin!", font=("cursive", 16, "bold"),fg="#ffffff", bg="#000000")
         self.lbl_hosgeldin.pack(side="left")
 
-        self.btn_profil = tk.Button(self.ust_panel, text="👤 Profilim", font=("DejaVu Sans", 10, "bold"), bg="#2196F3", fg="white", command=self.profile_git_komutu)
+        self.btn_profil = tk.Button(self.ust_panel, text="Profilim", font=("DejaVu Sans", 10, "bold"), bg="#790909", fg="#ffffff", command=self.profile_git_komutu)
         self.btn_profil.pack(side="right")
 
-        self.ana_govde = tk.Frame(self)
+        self.ana_govde = tk.Frame(self, bg="#000000")
         self.ana_govde.pack(fill="both", expand=True)
 
         self.sol_panel = tk.Frame(self.ana_govde, width=250, bg='#2b2b2b')
@@ -44,11 +44,11 @@ class AnaMenuEkrani(tk.Frame):
             self.sol_panel, 
             text="Tümünü Gör ➔", 
             font=("DejaVu Sans", 9, "bold"), 
-            fg="#4CAF50",
+            fg="#FFFFFF",
             bg="#2b2b2b", 
             bd=0, 
-            activebackground="#2b2b2b", 
-            activeforeground="#388E3C", 
+            activebackground="#4e0000", 
+            activeforeground="#FFFFFF", 
             cursor="hand2", #el şekli
             command=self.kazanimlara_git_komutu
         )

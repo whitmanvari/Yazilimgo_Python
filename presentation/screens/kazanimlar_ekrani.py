@@ -7,17 +7,17 @@ class KazanimlarEkrani(tk.Frame):
         self.ana_menuye_don_komutu = ana_menuye_don_komutu
 
         # Başlık Bölgesi
-        self.header_frame = tk.Frame(self, bg="#4CAF50")
+        self.header_frame = tk.Frame(self, bg="#FD9E9E")
         self.header_frame.pack(fill="x")
 
         self.btn_geri = tk.Button(self.header_frame, text="⬅ Ana Menüye Dön", 
                                   command=self.ana_menuye_don_komutu, 
-                                  bg="#388E3C", fg="white", font=("DejaVu Sans", 10, "bold"), 
+                                  bg="#FD9E9E", fg="white", font=("DejaVu Sans", 10, "bold"), 
                                   bd=0, padx=10, pady=10)
         self.btn_geri.pack(side="left")
 
         self.lbl_baslik = tk.Label(self.header_frame, text="Kazandığın Rozetler", 
-                                   font=("DejaVu Sans", 14, "bold"), bg="#4CAF50", fg="white")
+                                   font=("cursive", 14, "bold"), bg="#FD9E9E", fg="white")
         self.lbl_baslik.pack(side="left", padx=20, pady=10)
 
         self.content_frame = tk.Frame(self, bg="#ffffff")

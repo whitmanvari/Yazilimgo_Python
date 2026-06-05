@@ -1,19 +1,32 @@
 import tkinter as tk
 
 class DersKarti(tk.Frame):
-    def __init__(self, parent, ders_basligi, ders_turu, baslat_komutu, tamamlandi_mi=False):
-        # Eğer ders tamamlandıysa arka planı hafif yeşil, buton rengini soluk yeşil yapıyoruz
-        bg_color = "#e8f5e9" if tamamlandi_mi else "#ffffff"
-        btn_color = "#81c784" if tamamlandi_mi else "#4CAF50"
-        btn_text = "Tekrar Çöz" if tamamlandi_mi else "Dersi Başlat"
+    def __init__(self, parent, baslik, tur, komut, tamamlandi_mi=False):
+        # 1. Arka plan renkleri: Tamamlandıysa hafif pembe, tamamlanmadıysa beyaz
+        arkaplan_rengi = "#FAC0C0" if tamamlandi_mi else "#ffffff"
+        
+        super().__init__(parent, bg=arkaplan_rengi, bd=1, relief="ridge")
 
-        super().__init__(parent, relief="ridge", borderwidth=2, padx=10, pady=10, bg=bg_color)
+        self.lbl_baslik = tk.Label(self, text=baslik, font=("DejaVu Sans", 11, "bold"), bg=arkaplan_rengi, fg="#333333")
+        self.lbl_baslik.pack(anchor="w", padx=15, pady=(15, 5))
 
-        self.lbl_baslik=tk.Label(self, text=ders_basligi, font=("DejaVu Sans", 12, "bold"), bg=bg_color)
-        self.lbl_baslik.pack(anchor="w", pady=(0,5))
+        self.lbl_tur = tk.Label(self, text=f"Tür: {tur}", font=("DejaVu Sans", 9, "italic"), bg=arkaplan_rengi, fg="#888888")
+        self.lbl_tur.pack(anchor="w", padx=15, pady=(0, 10))
 
-        self.lbl_turu= tk.Label(self, text=f"Tür: {ders_turu}", font=("DejaVu Sans", 10), fg="gray", bg=bg_color)
-        self.lbl_turu.pack(anchor="w", pady=(0,10))
-
-        self.btn_basla=tk.Button(self, text=btn_text, bg=btn_color, fg="white", font=("DejaVu Sans", 10, "bold"), command=baslat_komutu)
-        self.btn_basla.pack(anchor="e")
+        btn_renk = "#FAA2A2" if tamamlandi_mi else "#790909"
+        btn_metin = "Tekrar Çöz" if tamamlandi_mi else "Derse Başla"
+        
+        self.btn_git = tk.Button(
+            self, 
+            text=btn_metin, 
+            bg=btn_renk, 
+            fg="#ffffff", 
+            font=("DejaVu Sans", 9, "bold"), 
+            bd=0, 
+            padx=15, 
+            pady=5, 
+            cursor="hand2",
+            command=komut
+        )
+        
+        self.btn_git.place(relx=1.0, rely=1.0, anchor="se", x=-15, y=-15)

@@ -18,7 +18,7 @@ class RozetWidget(tk.Frame):
 
         if not rozet_listesi:
             tk.Label(self.rozet_alani, text="Henüz hiç rozet kazanılmadı.", 
-                     fg="gray", font=("DejaVu Sans", 10, "italic"), bg=self.bg).pack(anchor="w")
+                     fg="#ffffff", font=("DejaVu Sans", 10, "italic"), bg=self.bg).pack(anchor="w")
             return
 
         for i, rozet_adi in enumerate(rozet_listesi):
