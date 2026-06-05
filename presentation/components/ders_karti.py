@@ -1,32 +1,47 @@
-import tkinter as tk
+from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel, QPushButton
+from PyQt6.QtCore import Qt
 
-class DersKarti(tk.Frame):
-    def __init__(self, parent, baslik, tur, komut, tamamlandi_mi=False):
-        # 1. Arka plan renkleri: Tamamlandıysa hafif pembe, tamamlanmadıysa beyaz
-        arkaplan_rengi = "#FAC0C0" if tamamlandi_mi else "#ffffff"
+class DersKarti(QFrame):
+    def __init__(self, parent=None, baslik="", tur="", komut=None, tamamlandi_mi=False):
+        super().__init__(parent)
         
-        super().__init__(parent, bg=arkaplan_rengi, bd=1, relief="ridge")
-
-        self.lbl_baslik = tk.Label(self, text=baslik, font=("DejaVu Sans", 11, "bold"), bg=arkaplan_rengi, fg="#333333")
-        self.lbl_baslik.pack(anchor="w", padx=15, pady=(15, 5))
-
-        self.lbl_tur = tk.Label(self, text=f"Tür: {tur}", font=("DejaVu Sans", 9, "italic"), bg=arkaplan_rengi, fg="#888888")
-        self.lbl_tur.pack(anchor="w", padx=15, pady=(0, 10))
-
+        arkaplan_rengi = "#FAC0C0" if tamamlandi_mi else "#ffffff"
+        self.setStyleSheet(f"""
+            QFrame {{
+                background-color: {arkaplan_rengi};
+                border: 1px solid #ddd;
+                border-radius: 10px;
+            }}
+        """)
+        
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(15, 15, 15, 15)
+        
+        self.lbl_baslik = QLabel(baslik)
+        self.lbl_baslik.setStyleSheet("font-weight: bold; font-size: 18px; border: none; color: #333;")
+        layout.addWidget(self.lbl_baslik)
+        
+        self.lbl_tur = QLabel(f"Tür: {tur}")
+        self.lbl_tur.setStyleSheet("color: #666; font-style: italic; border: none; font-size: 12px;")
+        layout.addWidget(self.lbl_tur)
+        
         btn_renk = "#FAA2A2" if tamamlandi_mi else "#790909"
         btn_metin = "Tekrar Çöz" if tamamlandi_mi else "Derse Başla"
         
-        self.btn_git = tk.Button(
-            self, 
-            text=btn_metin, 
-            bg=btn_renk, 
-            fg="#ffffff", 
-            font=("DejaVu Sans", 9, "bold"), 
-            bd=0, 
-            padx=15, 
-            pady=5, 
-            cursor="hand2",
-            command=komut
-        )
+        self.btn_git = QPushButton(btn_metin)
+        self.btn_git.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_git.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {btn_renk};
+                color: white;
+                font-weight: bold;
+                padding: 8px 20px;
+                border-radius: 6px;
+                border: none;
+            }}
+            QPushButton:hover {{ background-color: #570B0B; }}
+        """)
+        if komut:
+            self.btn_git.clicked.connect(komut)
         
-        self.btn_git.place(relx=1.0, rely=1.0, anchor="se", x=-15, y=-15)
+        layout.addWidget(self.btn_git, alignment=Qt.AlignmentFlag.AlignRight)

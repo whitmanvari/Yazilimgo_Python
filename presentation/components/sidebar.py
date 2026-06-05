@@ -1,99 +1,104 @@
-import tkinter as tk
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QSizePolicy
+from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve
 
-class SidebarWidget(tk.Frame):
-    def __init__(self, parent, sayfa_gecis_komutu, cikis_komutu):
-        super().__init__(parent, bg="#1e1e1e")
-        self.pack_propagate(False) 
-
+class SidebarWidget(QWidget):
+    def __init__(self, parent=None, sayfa_gecis_komutu=None, cikis_komutu=None):
+        super().__init__(parent)
         self.sayfa_gecis_komutu = sayfa_gecis_komutu
         self.cikis_komutu = cikis_komutu
 
         self.kapali_genislik = 50
         self.acik_genislik = 200
-        self.hedef_genislik = self.kapali_genislik
-        self.animasyon_id = None
+        
+        self.setFixedWidth(self.kapali_genislik)
+        self.setStyleSheet("QWidget { background-color: #1e1e1e; }")
 
-        self.btn_hamburger = tk.Label(self, text="☰", font=("DejaVu Sans", 14), bg="#1e1e1e", fg="white", cursor="hand2")
-        self.btn_hamburger.pack(anchor="nw", padx=12, pady=10)
+        self.init_ui()
 
-        self.lbl_logo = tk.Label(self, text="YazılımGo", font=("cursive", 18), bg="#1e1e1e", fg="white")
+    def init_ui(self):
+        # Ana Layout
+        self.layout = QVBoxLayout(self)
+        self.layout.setContentsMargins(0, 10, 0, 10)
+        self.layout.setSpacing(5)
 
-        # Buton Verilerimiz
+        self.btn_hamburger = QLabel("☰")
+        self.btn_hamburger.setStyleSheet("font-size: 24px; color: white; padding-left: 15px;")
+        self.layout.addWidget(self.btn_hamburger)
+
+        self.lbl_logo = QLabel("")
+        self.lbl_logo.setStyleSheet("font-family: cursive; font-size: 22px; font-weight: bold; color: white; padding-left: 15px;")
+        self.layout.addWidget(self.lbl_logo)
+        self.layout.addSpacing(20)
+
         self.buton_verileri = [
-            {"text": "Dersler", "komut": lambda: self.sayfa_gecis_komutu("AnaMenu"), "alt": False, "renk": "#1e1e1e"},
-            {"text": "Rozetler", "komut": lambda: self.sayfa_gecis_komutu("KazanimlarEkrani"), "alt": False, "renk": "#1e1e1e"},
-            {"text": "Profil", "komut": lambda: self.sayfa_gecis_komutu("ProfilEkrani"), "alt": False, "renk": "#1e1e1e"},
-            {"text": "Çıkış Yap", "komut": self.cikis_komutu, "alt": True, "renk": "#680b0b"}
+            {"text": "Dersler", "komut": lambda: self.sayfa_gecis_komutu("AnaMenu"), "renk": "#1e1e1e"},
+            {"text": "Rozetler", "komut": lambda: self.sayfa_gecis_komutu("KazanimlarEkrani"), "renk": "#1e1e1e"},
+            {"text": "Profil", "komut": lambda: self.sayfa_gecis_komutu("ProfilEkrani"), "renk": "#1e1e1e"}
         ]
 
         self.butonlar = []
 
         for veri in self.buton_verileri:
-            btn = tk.Button(self, text=veri["text"], command=veri["komut"],
-                            bg=veri["renk"], fg="white", font=("DejaVu Sans", 11),
-                            bd=0, anchor="w", padx=15, pady=10, 
-                            activebackground="#555555", activeforeground="white",
-                            highlightthickness=0) 
-            
-            btn.bind("<Enter>", lambda e, b=btn: self._btn_hover_gir(e, b))
-            btn.bind("<Leave>", lambda e, b=btn, r=veri["renk"]: self._btn_hover_cik(e, b, r))
-            self.butonlar.append(btn)
+            btn = QPushButton("") # Başlangıçta metinsiz
+            btn.setCursor(Qt.CursorShape.PointingHandCursor)
+            btn.setStyleSheet("""
+                QPushButton {
+                    background-color: #1e1e1e; color: white;
+                    text-align: left; padding: 12px 15px;
+                    font-size: 14px; font-weight: bold; border: none;
+                }
+                QPushButton:hover { background-color: #444444; }
+            """)
+            btn.clicked.connect(veri["komut"])
+            self.layout.addWidget(btn)
+            self.butonlar.append((btn, veri["text"])) # Referans için tuple olarak sakla
 
-        self.bind("<Enter>", self.genislet)
-        self.bind("<Leave>", self.daralt)
-        self.btn_hamburger.bind("<Enter>", self.genislet)
+        self.layout.addStretch() 
 
-    def _btn_hover_gir(self, event, btn):
-        self.genislet() # Hover durumunda menünün kapanmasını engeller
-        btn.config(bg="#444444") # Hover rengi
+        # 4. Çıkış Yap Butonu (En altta)
+        self.btn_cikis = QPushButton("")
+        self.btn_cikis.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_cikis.setStyleSheet("""
+            QPushButton {
+                background-color: #680b0b; color: white;
+                text-align: left; padding: 12px 15px;
+                font-size: 14px; font-weight: bold; border: none;
+            }
+            QPushButton:hover { background-color: #8b0e0e; }
+        """)
+        self.btn_cikis.clicked.connect(self.cikis_komutu)
+        self.layout.addWidget(self.btn_cikis)
+        self.butonlar.append((self.btn_cikis, "Çıkış Yap"))
 
-    def _btn_hover_cik(self, event, btn, orijinal_renk):
-        btn.config(bg=orijinal_renk)
+    
+    def enterEvent(self, event):
+        """Fare Sidebar'ın üzerine geldiğinde (Hover)"""
+        self.lbl_logo.setText("YazılımGo")
+        for btn, text in self.butonlar:
+            btn.setText(text) # Metinleri geri getir
+        self.animasyon_tetikle(self.acik_genislik)
+        super().enterEvent(event)
 
-    def genislet(self, event=None):
-        if self.hedef_genislik == self.acik_genislik:
-            return # Zaten açıksa tekrar işlem yapma
+    def leaveEvent(self, event):
+        """Fare Sidebar'dan çıktığında"""
+        self.lbl_logo.setText("")
+        for btn, text in self.butonlar:
+            btn.setText("") 
+        self.animasyon_tetikle(self.kapali_genislik)
+        super().leaveEvent(event)
 
-        self.hedef_genislik = self.acik_genislik
-        
-        
-        self.lbl_logo.pack(fill="x", pady=(0, 20))
-        for i, btn in enumerate(self.butonlar):
-            if self.buton_verileri[i]["alt"]:
-                btn.pack(side="bottom", fill="x", pady=10)
-            else:
-                btn.pack(fill="x", pady=5)
-                
-        self._animasyon()
+    def animasyon_tetikle(self, hedef_genislik):
+        """Yumuşak Çekmece Animasyonu"""
+        self.anim_min = QPropertyAnimation(self, b"minimumWidth")
+        self.anim_min.setDuration(250) # Çeyrek saniye
+        self.anim_min.setStartValue(self.width())
+        self.anim_min.setEndValue(hedef_genislik)
+        self.anim_min.setEasingCurve(QEasingCurve.Type.InOutQuart) 
+        self.anim_min.start()
 
-    def daralt(self, event=None):
-        if self.hedef_genislik == self.kapali_genislik:
-            return # Zaten kapalıysa tekrar işlem yapma
-
-        self.hedef_genislik = self.kapali_genislik
-        
-        self.lbl_logo.pack_forget()
-        for btn in self.butonlar:
-            btn.pack_forget()
-            
-        self._animasyon()
-
-    def _animasyon(self):
-        try:
-            mevcut = int(self.place_info().get('width', self.winfo_width()))
-        except:
-            mevcut = self.winfo_width()
-            
-        adim = 30 # Animasyon hızı 
-        
-        if self.animasyon_id:
-            self.after_cancel(self.animasyon_id)
-
-        if mevcut < self.hedef_genislik:
-            yeni = min(mevcut + adim, self.hedef_genislik)
-            self.place_configure(width=yeni)
-            self.animasyon_id = self.after(10, self._animasyon)
-        elif mevcut > self.hedef_genislik:
-            yeni = max(mevcut - adim, self.hedef_genislik)
-            self.place_configure(width=yeni)
-            self.animasyon_id = self.after(10, self._animasyon)
+        self.anim_max = QPropertyAnimation(self, b"maximumWidth")
+        self.anim_max.setDuration(250)
+        self.anim_max.setStartValue(self.width())
+        self.anim_max.setEndValue(hedef_genislik)
+        self.anim_max.setEasingCurve(QEasingCurve.Type.InOutQuart)
+        self.anim_max.start()

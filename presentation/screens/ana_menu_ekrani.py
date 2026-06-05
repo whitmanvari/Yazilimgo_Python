@@ -1,111 +1,134 @@
-import tkinter as tk
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QScrollArea
+from PyQt6.QtCore import Qt
+
 from presentation.components.xp_bar import XPBar
 from presentation.components.rozet_widget import RozetWidget
 from presentation.components.ders_karti import DersKarti
 
+class AnaMenuEkrani(QWidget):
+    def __init__(self, parent=None, kullanici_servisi=None, ders_servisi=None, 
+                 sayfa_gecis_komutu=None, profile_git_komutu=None, kazanimlara_git_komutu=None):
+        super().__init__(parent)
 
-class AnaMenuEkrani(tk.Frame):
-    def __init__(self, parent,kullanici_servisi, ders_servisi, sayfa_gecis_komutu, profile_git_komutu, kazanimlara_git_komutu):
-        super().__init__(parent, bg="#000000")
-
-        self.kullanici_servisi=kullanici_servisi
-        self.ders_servisi=ders_servisi
-        self.sayfa_gecis_komutu=sayfa_gecis_komutu
-        self.profile_git_komutu=profile_git_komutu
+        self.kullanici_servisi = kullanici_servisi
+        self.ders_servisi = ders_servisi
+        self.sayfa_gecis_komutu = sayfa_gecis_komutu
+        self.profile_git_komutu = profile_git_komutu
         self.kazanimlara_git_komutu = kazanimlara_git_komutu
+        self.aktif_kullanici_id = None
 
-        self.aktif_kullanici_id= None
+        self.init_ui()
 
-        self.ust_panel = tk.Frame(self,bg="#000000")
-        self.ust_panel.pack(fill="x", pady=10, padx=20)
+    def init_ui(self):
+        self.ana_layout = QVBoxLayout(self)
+        self.ana_layout.setContentsMargins(0, 0, 0, 0)
+        self.ana_layout.setSpacing(0)
 
-        self.lbl_hosgeldin = tk.Label(self.ust_panel, text="Hoş Geldin!", font=("cursive", 16, "bold"),fg="#ffffff", bg="#000000")
-        self.lbl_hosgeldin.pack(side="left")
+        self.ust_panel = QWidget()
+        self.ust_panel.setStyleSheet("background-color: #000000;")
+        self.ust_panel.setFixedHeight(70)
+        ust_layout = QHBoxLayout(self.ust_panel)
+        ust_layout.setContentsMargins(20, 0, 20, 0)
 
-        self.btn_profil = tk.Button(self.ust_panel, text="Profilim", font=("DejaVu Sans", 10, "bold"), bg="#790909", fg="#ffffff", command=self.profile_git_komutu)
-        self.btn_profil.pack(side="right")
+        self.lbl_hosgeldin = QLabel("Hoş Geldin!")
+        self.lbl_hosgeldin.setStyleSheet("font-family: cursive; font-size: 24px; font-weight: bold; color: #ffffff;")
+        ust_layout.addWidget(self.lbl_hosgeldin)
 
-        self.ana_govde = tk.Frame(self, bg="#000000")
-        self.ana_govde.pack(fill="both", expand=True)
+        ust_layout.addStretch()
 
-        self.sol_panel = tk.Frame(self.ana_govde, width=250, bg='#2b2b2b')
-        self.sol_panel.pack(side="left", fill="y")
+        self.btn_profil = QPushButton("Profilim")
+        self.btn_profil.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_profil.setStyleSheet("""
+            QPushButton {
+                background-color: #790909;
+                color: white; font-weight: bold; font-size: 14px;
+                padding: 10px 20px; border-radius: 6px;
+            }
+            QPushButton:hover { background-color: #570B0B; }
+        """)
+        self.btn_profil.clicked.connect(self.profile_git_komutu)
+        ust_layout.addWidget(self.btn_profil)
 
-        self.sag_panel = tk.Frame(self.ana_govde, bg="#ffffff")
-        self.sag_panel.pack(side="right", fill="both", expand=True)
+        self.ana_layout.addWidget(self.ust_panel)
 
-        self.xp_bar = XPBar(self.sol_panel)
-        self.xp_bar.pack(pady=20, padx=20, fill="x")
+        self.govde_widget = QWidget()
+        govde_layout = QHBoxLayout(self.govde_widget)
+        govde_layout.setContentsMargins(0, 0, 0, 0)
+        govde_layout.setSpacing(0)
 
-        self.rozet_widget= RozetWidget(self.sol_panel)
-        self.rozet_widget.pack(pady=20, padx=10, fill="x")
+        self.sol_panel = QWidget()
+        self.sol_panel.setFixedWidth(280)
+        self.sol_panel.setStyleSheet("background-color: #2b2b2b;")
+        sol_layout = QVBoxLayout(self.sol_panel)
+        sol_layout.setContentsMargins(20, 30, 20, 30)
+        sol_layout.setSpacing(25)
 
-        self.btn_tum_rozetler = tk.Button(
-            self.sol_panel, 
-            text="Tümünü Gör ➔", 
-            font=("DejaVu Sans", 9, "bold"), 
-            fg="#FFFFFF",
-            bg="#2b2b2b", 
-            bd=0, 
-            activebackground="#4e0000", 
-            activeforeground="#FFFFFF", 
-            cursor="hand2", #el şekli
-            command=self.kazanimlara_git_komutu
-        )
-        self.btn_tum_rozetler.pack(pady=(0, 20), anchor="e", padx=15)
+        self.xp_bar = XPBar()
+        sol_layout.addWidget(self.xp_bar)
 
-        self.lbl_dersler=tk.Label(self.sag_panel, text="Mevcut Dersler", font=("DejaVu Sans", 12, "bold"), bg="#ffffff")
-        self.lbl_dersler.pack(pady=20, padx=10, anchor="w")
+        self.rozet_widget = RozetWidget()
+        sol_layout.addWidget(self.rozet_widget)
 
-        self.canvas = tk.Canvas(self.sag_panel, bg="#ffffff", highlightthickness=0)
-        self.scrollbar = tk.Scrollbar(self.sag_panel, orient="vertical", command=self.canvas.yview)
-        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+        self.btn_tum_rozetler = QPushButton("Tümünü Gör ➔")
+        self.btn_tum_rozetler.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_tum_rozetler.setStyleSheet("QPushButton { color: white; border: none; font-weight: bold; font-size: 13px; text-align: right; } QPushButton:hover { color: #FAA2A2; }")
+        self.btn_tum_rozetler.clicked.connect(self.kazanimlara_git_komutu)
+        sol_layout.addWidget(self.btn_tum_rozetler)
+        sol_layout.addStretch()
 
-        self.ders_listesi_frame = tk.Frame(self.canvas, bg="#ffffff")
-        self.ders_listesi_frame.bind(
-            "<Configure>",
-            lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all"))
-        )
-        self.canvas_frame = self.canvas.create_window((0, 0), window=self.ders_listesi_frame, anchor="nw")
-        self.canvas.bind('<Configure>', lambda e: self.canvas.itemconfig(self.canvas_frame, width=e.width))
-        self.canvas.pack(side="left", fill="both", expand=True, padx=(20, 0), pady=10)
-        self.scrollbar.pack(side="right", fill="y", pady=10, padx=(0, 10))
-        
-        # Fare Tekerleği Desteği (Linux ve Windows için)
-        self.canvas.bind_all("<Button-4>", lambda e: self.canvas.yview_scroll(-1, "units")) # Linux yukarı
-        self.canvas.bind_all("<Button-5>", lambda e: self.canvas.yview_scroll(1, "units"))  # Linux aşağı
-        self.canvas.bind_all("<MouseWheel>", lambda e: self.canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+        govde_layout.addWidget(self.sol_panel)
 
+        self.sag_panel = QWidget()
+        self.sag_panel.setStyleSheet("background-color: #ffffff;")
+        sag_layout = QVBoxLayout(self.sag_panel)
+        sag_layout.setContentsMargins(30, 30, 30, 30)
+
+        self.lbl_dersler = QLabel("Mevcut Dersler")
+        self.lbl_dersler.setStyleSheet("font-size: 22px; font-weight: bold; color: #333;")
+        sag_layout.addWidget(self.lbl_dersler)
+
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setStyleSheet("QScrollArea { border: none; background-color: white; }")
+
+        self.ders_listesi_widget = QWidget()
+        self.ders_listesi_widget.setStyleSheet("background-color: white;")
+        self.ders_listesi_layout = QVBoxLayout(self.ders_listesi_widget)
+        self.ders_listesi_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.ders_listesi_layout.setSpacing(15)
+
+        self.scroll_area.setWidget(self.ders_listesi_widget)
+        sag_layout.addWidget(self.scroll_area)
+
+        govde_layout.addWidget(self.sag_panel)
+        self.ana_layout.addWidget(self.govde_widget)
 
     def verileri_yukle(self):
-        kullanici=self.kullanici_servisi.repo.id_ile_getir(self.aktif_kullanici_id)
+        kullanici = self.kullanici_servisi.repo.id_ile_getir(self.aktif_kullanici_id)
         if kullanici:
             self.xp_bar.guncelle(kullanici.toplam_xp, kullanici.seviye)
-            rozetler=[]
-            for k in kullanici.kazanimlar:
-                rozetler.append(k.kazanim_tanimi.kazanim_adi)
+            rozetler = [k.kazanim_tanimi.kazanim_adi for k in kullanici.kazanimlar]
 
-            for widget in self.ders_listesi_frame.winfo_children():
-                widget.destroy()
+            for i in reversed(range(self.ders_listesi_layout.count())): 
+                widget = self.ders_listesi_layout.itemAt(i).widget()
+                self.ders_listesi_layout.removeWidget(widget)
+                widget.setParent(None)
 
             self.rozet_widget.rozetleri_goster(rozetler)
+            
         dersler = self.ders_servisi.modulun_derslerini_getir(modul_id=1)
         if dersler:
-            # Kullanıcının daha önceden başarıyla bitirdiği derslerin ID'lerini bir listeye çıkarıyorum
-            tamamlanan_idler = [ilerleme.ders_id for ilerleme in kullanici.ilerlemeler if ilerleme.durum == 'tamamlandi']
+            tamamlanan_idler = [i.ders_id for i in kullanici.ilerlemeler if i.durum == 'tamamlandi']
 
             for ders in dersler:
-                # Bu dersin ID'si, tamamlananlar listesinde var mı kontrol ediyorum
                 durum_tamamlandi = ders.ders_id in tamamlanan_idler
-
                 kart = DersKarti(
-                    self.ders_listesi_frame,
-                    ders.ders_basligi,
-                    ders.ders_turu,
-                    lambda d= ders: self.dersi_baslat(d),
+                    baslik=ders.ders_basligi,
+                    tur=ders.ders_turu,
+                    komut=lambda checked, d=ders: self.dersi_baslat(d), 
                     tamamlandi_mi=durum_tamamlandi
                 )
-                kart.pack(pady=5, fill="x")
+                self.ders_listesi_layout.addWidget(kart)
 
     def dersi_baslat(self, ders):
         print(f"{ders.ders_basligi} ekranına geçiliyor...")
